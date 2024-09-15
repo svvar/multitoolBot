@@ -69,6 +69,40 @@ translations = {
             'apps_choose_delete': 'Выберите приложение для удаления:',
             'apps_delete_success': 'Приложение *{}* удалено',
             'apps_blocked_warning': '🚨 ВНИМАНИЕ! Ваше приложение *{}* заблокировано'
+        },
+    'en':
+        {
+            'menu_check_accs': 'Check accounts for bans',
+            'menu_2fa': '2fa code',
+            'menu_tiktok': 'Download video from TikTok',
+            'menu_apps': 'Google Play apps',
+
+            'start_msg': 'Hello, I am an arbitrage bot',
+
+            'accs_ask_list': 'Send a list of account links or a txt file with links',
+            'accs_info_msg': '*Active: {}\nBanned: {}\nCheck errors: {}*',
+            'accs_active_label': 'Active accounts',
+            'accs_banned_label': 'Banned accounts',
+
+            '2fa_select_key': 'Enter the 2fa key or select from recent:',
+            '2fa_enter_key': 'Enter the 2fa key:',
+            '2fa_wrong_key': 'Wrong key',
+            '2fa_code_msg': 'Your code: `{}` \nExpiration time: {} seconds',
+
+            'tiktok_ask_url': 'Send a link to a video from TikTok',
+            'tiktok_not_found': 'Video not found',
+
+            'apps_add_button': 'Add app',
+            'apps_delete_button': 'Delete app',
+            'apps_no_apps': 'You have no apps',
+            'apps_ask_url': 'Enter a link to the app in Google Play',
+            'apps_bad_url': 'Invalid link, enter a link to the app in Google Play',
+            'apps_already_blocked': 'You are trying to add an already blocked app or there was no such app',
+            'apps_added_yet': 'The app has already been added',
+            'apps_add_success': 'App *{}* added successfully',
+            'apps_choose_delete': 'Select an app to delete:',
+            'apps_delete_success': 'App *{}* deleted',
+            'apps_blocked_warning': '🚨 ATTENTION! Your app *{}* is blocked'
         }
 }
 

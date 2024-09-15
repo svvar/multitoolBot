@@ -1,7 +1,8 @@
 import asyncio
+import io
 import os
-from apscheduler.schedulers.asyncio import AsyncIOScheduler
 import aiohttp
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from concurrent.futures import ThreadPoolExecutor
 from aiogram import Bot, Dispatcher, types, F, filters
 from aiogram.fsm.context import FSMContext
@@ -10,10 +11,8 @@ from aiogram.methods import SendMediaGroup
 
 from functions import account_checking, tiktok, twoFA, market_apps
 
-import io
-
 from .states import *
-from .callbacks import EditAppsMenuCallback, DeleteAppCallback
+from .callbacks import EditAppsMenuCallback
 from .middlewares import LangMiddleware
 from .translations import translations as ts, handlers_variants
 from . import storage
@@ -55,9 +54,9 @@ class ArbitrageBot:
         if not await storage.find_user(message.from_user.id):
             await storage.add_user(message.from_user.id)
 
-        await message.answer("Виберіть мову / Выберите язык",
+        await message.answer("Виберіть мову / Выберите язык / Select language:",
                              reply_markup=ReplyKeyboardBuilder()
-                             .button(text='🇺🇦 Українська').button(text='🇷🇺 Русский').as_markup())
+                             .button(text='🇺🇦 Українська').button(text='🇷🇺 Русский').button(text='🇺🇸 English').as_markup())
 
         await state.set_state(Setup.choosing_lang)
 
@@ -67,6 +66,8 @@ class ArbitrageBot:
             lang = 'ua'
         elif 'русский' in lang.lower():
             lang = 'ru'
+        elif 'english' in lang.lower():
+            lang = 'en'
         else:
             await message.answer('Неправильно вказана мова, спробуйте ще раз\nНеправильно указан язык, попробуйте еще раз')
             return
@@ -80,7 +81,6 @@ class ArbitrageBot:
         kb.adjust(2)
 
         await message.answer(ts[lang]['start_msg'], reply_markup=kb.as_markup())
-
         await state.clear()
 
 
@@ -202,10 +202,12 @@ class ArbitrageBot:
         url = message.text
         save_path = os.path.join(os.getcwd(), 'tiktok_videos')
 
+        # Clearing state early here to make other commands work correctly while downloading tiktok
+        await state.clear()
+
         loop = asyncio.get_event_loop()
         with ThreadPoolExecutor() as executor:
             video_path = await loop.run_in_executor(executor, tiktok.download_tiktok_video, url, save_path)
-            print(video_path)
 
         if video_path:
             input_file = types.FSInputFile(video_path)
@@ -213,7 +215,6 @@ class ArbitrageBot:
             os.remove(video_path)
         else:
             await message.answer(ts[lang]['tiktok_not_found'])
-        await state.clear()
 
 
     async def apps_menu(self, message: types.Message, state: FSMContext, lang: str):
