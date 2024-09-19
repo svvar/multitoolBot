@@ -5,8 +5,11 @@ translations = {
             'menu_2fa': '2fa код',
             'menu_tiktok': 'Завантажити відео з TikTok',
             'menu_apps': 'Додатки Google Play',
+            'menu_id': 'Генератор ID',
 
-            'start_msg': 'Привіт, я бот для арбітражу',
+            'to_menu': 'В меню',
+
+            'start_msg': 'Виберіть дію з меню:',
 
             'accs_ask_list': 'Відправте список посилань на акаунти або txt файл з посиланнями',
             'accs_info_msg': '*Активних: {}\nЗаблокованих: {}\nПомилок перевірки: {}*',
@@ -32,7 +35,24 @@ translations = {
             'apps_add_success': 'Додаток *{}* успішно додано',
             'apps_choose_delete': 'Виберіть додаток для видалення:',
             'apps_delete_success': 'Додаток *{}* видалено',
-            'apps_blocked_warning': '🚨 УВАГА! Ваш додаток *{}* заблоковано'
+            'apps_blocked_warning': '🚨 УВАГА! Ваш додаток *{}* заблоковано',
+
+
+            'ask_meta': 'Чи потрібні вам метадані фото?',
+            'no_meta': 'Метадані не потрібні',
+            'random_meta': 'Випадкові метадані',
+            'repeat_input': 'Помилкова відповідь, введіть ще раз коректно',
+            'man': 'Чоловік',
+            'woman': 'Жінка',
+            'select_sex': 'Виберіть стать:',
+            'enter_name': 'Введіть ім\'я та прізвище:',
+            'enter_age': 'Введіть дату народження (ДД.ММ.РРРР):',
+            'select_photo_color': 'Виберіть колір фото:',
+            'color': 'Кольорове',
+            'black_white': 'Чорно-біле',
+            'one_more': 'Ще один варіант',
+            'id_gen_err': 'Помилка генерації',
+            'wait_generating': 'Зачекайте, генерується фото...',
 
 
         },
@@ -42,8 +62,11 @@ translations = {
             'menu_2fa': '2fa код',
             'menu_tiktok': 'Загрузить видео с TikTok',
             'menu_apps': 'Приложения Google Play',
+            'menu_id': 'Генератор ID',
 
-            'start_msg': 'Привет, я бот для арбитража',
+            'to_menu': 'В меню',
+
+            'start_msg': 'Выберите действие из меню:',
 
             'accs_ask_list': 'Отправьте список ссылок на аккаунты или txt файл с ссылками',
             'accs_info_msg': '*Активных: {}\nЗаблокированных: {}\nОшибок проверки: {}*',
@@ -68,7 +91,25 @@ translations = {
             'apps_add_success': 'Приложение *{}* успешно добавлено',
             'apps_choose_delete': 'Выберите приложение для удаления:',
             'apps_delete_success': 'Приложение *{}* удалено',
-            'apps_blocked_warning': '🚨 ВНИМАНИЕ! Ваше приложение *{}* заблокировано'
+            'apps_blocked_warning': '🚨 ВНИМАНИЕ! Ваше приложение *{}* заблокировано',
+
+            'ask_meta': 'Нужны ли вам метаданные фото?',
+            'no_meta': 'Метаданные не нужны',
+            'random_meta': 'Случайные метаданные',
+            'repeat_input': 'Неверный ответ, введите еще раз корректно',
+            'man': 'Мужчина',
+            'woman': 'Женщина',
+            'select_sex': 'Выберите пол:',
+            'enter_name': 'Введите имя и фамилию:',
+            'enter_age': 'Введите дату рождения (ДД.ММ.ГГГГ):',
+            'select_photo_color': 'Выберите цвет фотографии:',
+            'color': 'Цветное',
+            'black_white': 'Черно-белое',
+            'one_more': 'Еще один вариант',
+            'id_gen_err': 'Ошибка генерации',
+            'wait_generating': 'Подождите, фото генерируется...',
+
+
         },
     'en':
         {
@@ -76,9 +117,11 @@ translations = {
             'menu_2fa': '2fa code',
             'menu_tiktok': 'Download video from TikTok',
             'menu_apps': 'Google Play apps',
+            'menu_id': 'ID generator',
 
-            'start_msg': 'Hello, I am an arbitrage bot',
+            'to_menu': 'To menu',
 
+            'start_msg': 'Choose an action from the menu:',
             'accs_ask_list': 'Send a list of account links or a txt file with links',
             'accs_info_msg': '*Active: {}\nBanned: {}\nCheck errors: {}*',
             'accs_active_label': 'Active accounts',
@@ -102,7 +145,23 @@ translations = {
             'apps_add_success': 'App *{}* added successfully',
             'apps_choose_delete': 'Select an app to delete:',
             'apps_delete_success': 'App *{}* deleted',
-            'apps_blocked_warning': '🚨 ATTENTION! Your app *{}* is blocked'
+            'apps_blocked_warning': '🚨 ATTENTION! Your app *{}* is blocked',
+
+            'ask_meta': 'Do you need photo metadata?',
+            'no_meta': 'No metadata needed',
+            'random_meta': 'Random metadata',
+            'repeat_input': 'Incorrect answer, enter again correctly',
+            'man': 'Male',
+            'woman': 'Female',
+            'select_sex': 'Select sex:',
+            'enter_name': 'Enter name and surname:',
+            'enter_age': 'Enter date of birth (DD.MM.YYYY):',
+            'select_photo_color': 'Select photo color:',
+            'color': 'Color',
+            'black_white': 'Black and white',
+            'one_more': 'One more variant',
+            'id_gen_err': 'Generation error',
+            'wait_generating': 'Wait, photo is generating...',
         }
 }
 

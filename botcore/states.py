@@ -20,3 +20,11 @@ class Apps(StatesGroup):
     info_shown = State()
     entering_url = State()
     selecting_to_delete = State()
+
+class IdGenerator(StatesGroup):
+    need_meta = State()
+    selecting_color = State()
+    selecting_sex = State()
+    entering_name = State()
+    entering_age = State()
+    generating = State()

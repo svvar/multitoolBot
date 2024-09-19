@@ -9,7 +9,7 @@ async def main():
 
     bot = ArbitrageBot(token=config['bot']['token'])
 
-    await bot.check_apps_task()
+    # await bot.check_apps_task()
     await bot.start_polling()
 
 

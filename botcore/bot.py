@@ -1,15 +1,17 @@
 import asyncio
+import random
+from datetime import datetime
 import io
 import os
 import aiohttp
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
 from aiogram import Bot, Dispatcher, types, F, filters
 from aiogram.fsm.context import FSMContext
 from aiogram.utils.keyboard import ReplyKeyboardBuilder, InlineKeyboardBuilder
 from aiogram.methods import SendMediaGroup
 
-from functions import account_checking, tiktok, twoFA, market_apps
+from functions import account_checking, downloader, twoFA, market_apps, id_generator
 
 from .states import *
 from .callbacks import EditAppsMenuCallback
@@ -34,6 +36,9 @@ class ArbitrageBot:
         self.dp.message(F.text.lower().in_(handlers_variants('menu_2fa')))(self.start_2fa)
         self.dp.message(F.text.lower().in_(handlers_variants('menu_tiktok')))(self.tiktok_download_start)
         self.dp.message(F.text.lower().in_(handlers_variants('menu_apps')))(self.apps_menu)
+        self.dp.message(F.text.lower().in_(handlers_variants('menu_id')))(self.id_gen_start)
+
+        self.dp.message(F.text.lower().in_(handlers_variants('to_menu')))(self.show_menu)
 
         self.dp.message(Setup.choosing_lang)(self.set_lang)
 
@@ -49,6 +54,13 @@ class ArbitrageBot:
         self.dp.callback_query(Apps.info_shown, EditAppsMenuCallback.filter(F.action == 'delete'))(self.delete_app_request)
         self.dp.message(Apps.entering_url)(self.add_app)
         self.dp.callback_query(Apps.selecting_to_delete)(self.delete_app)
+
+        self.dp.message(IdGenerator.need_meta)(self.id_gen_color)
+        self.dp.message(IdGenerator.selecting_color)(self.id_gen_sex)
+        self.dp.message(IdGenerator.selecting_sex)(self.id_gen_name)
+        self.dp.message(IdGenerator.entering_name)(self.id_gen_age)
+        self.dp.message(IdGenerator.entering_age)(self.id_gen_final)
+        self.dp.message(IdGenerator.generating, F.text.lower().in_(handlers_variants('one_more')))(self.id_generate)
 
     async def start_msg(self, message: types.Message, state: FSMContext):
         if not await storage.find_user(message.from_user.id):
@@ -72,12 +84,16 @@ class ArbitrageBot:
             await message.answer('Неправильно вказана мова, спробуйте ще раз\nНеправильно указан язык, попробуйте еще раз')
             return
         await storage.set_lang(message.from_user.id, lang)
+        await self.show_menu(message, state, lang)
+
+    async def show_menu(self, message: types.Message, state: FSMContext, lang: str):
 
         kb = ReplyKeyboardBuilder()
         kb.button(text=ts[lang]['menu_check_accs'])
         kb.button(text=ts[lang]['menu_2fa'])
         kb.button(text=ts[lang]['menu_tiktok'])
         kb.button(text=ts[lang]['menu_apps'])
+        kb.button(text=ts[lang]['menu_id'])
         kb.adjust(2)
 
         await message.answer(ts[lang]['start_msg'], reply_markup=kb.as_markup())
@@ -200,14 +216,14 @@ class ArbitrageBot:
 
     async def tiktok_download(self, message: types.Message, state: FSMContext, lang: str):
         url = message.text
-        save_path = os.path.join(os.getcwd(), 'tiktok_videos')
+        save_path = os.path.join(os.getcwd(), 'download_videos')
 
         # Clearing state early here to make other commands work correctly while downloading tiktok
         await state.clear()
 
         loop = asyncio.get_event_loop()
         with ThreadPoolExecutor() as executor:
-            video_path = await loop.run_in_executor(executor, tiktok.download_tiktok_video, url, save_path)
+            video_path = await loop.run_in_executor(executor, downloader.download_tiktok, url, save_path)
 
         if video_path:
             input_file = types.FSInputFile(video_path)
@@ -324,6 +340,135 @@ class ArbitrageBot:
                                             parse_mode='markdown')
 
         print('Apps checked')
+
+
+    async def id_gen_start(self, message: types.Message, state: FSMContext, lang: str):
+        reply_kb = ReplyKeyboardBuilder()
+        reply_kb.button(text=ts[lang]['no_meta'])
+        reply_kb.button(text=ts[lang]['random_meta'])
+        reply_kb.button(text=ts[lang]['to_menu'])
+        reply_kb.adjust(2)
+
+        await message.answer(ts[lang]['ask_meta'], reply_markup=reply_kb.as_markup())
+        await state.set_state(IdGenerator.need_meta)
+
+    async def id_gen_color(self, message: types.Message, state: FSMContext, lang: str):
+        meta = message.text
+        if meta.lower() == ts[lang]['no_meta'].lower():
+            await state.update_data({'meta': False})
+        elif meta.lower() == ts[lang]['random_meta'].lower():
+            await state.update_data({'meta': True})
+        else:
+            await message.answer(ts[lang]['repeat_input'])
+            return
+
+
+        reply_kb = ReplyKeyboardBuilder()
+        reply_kb.button(text=ts[lang]['color'])
+        reply_kb.button(text=ts[lang]['black_white'])
+        reply_kb.button(text=ts[lang]['to_menu'])
+        reply_kb.adjust(2)
+
+        await message.answer(ts[lang]['select_photo_color'], reply_markup=reply_kb.as_markup())
+        await state.set_state(IdGenerator.selecting_color)
+
+    async def id_gen_sex(self, message: types.Message, state: FSMContext, lang: str):
+        color = message.text
+        if color.lower() == ts[lang]['color'].lower():
+            await state.update_data({'grey': False})
+        elif color.lower() == ts[lang]['black_white'].lower():
+            await state.update_data({'grey': True})
+        else:
+            await message.answer(ts[lang]['repeat_input'])
+            return
+
+
+        reply_kb = ReplyKeyboardBuilder()
+        reply_kb.button(text=ts[lang]['man'])
+        reply_kb.button(text=ts[lang]['woman'])
+        reply_kb.button(text=ts[lang]['to_menu'])
+        reply_kb.adjust(2)
+
+        await message.answer(ts[lang]['select_sex'], reply_markup=reply_kb.as_markup())
+        await state.set_state(IdGenerator.selecting_sex)
+
+    async def id_gen_name(self, message: types.Message, state: FSMContext, lang: str):
+        sex = message.text
+        if sex.lower() == ts[lang]['man'].lower():
+            await state.update_data({'sex': 'male'})
+        elif sex.lower() == ts[lang]['woman'].lower():
+            await state.update_data({'sex': 'female'})
+        else:
+            await message.answer(ts[lang]['repeat_input'])
+            return
+
+        kb = ReplyKeyboardBuilder()
+        kb.button(text=ts[lang]['to_menu'])
+        await message.answer(ts[lang]['enter_name'], reply_markup=kb.as_markup())
+        await state.set_state(IdGenerator.entering_name)
+
+
+    async def id_gen_age(self, message: types.Message, state: FSMContext, lang: str):
+        name = message.text.split(' ')
+        if len(name) != 2:
+            await message.answer(ts[lang]['repeat_input'])
+            return
+
+        await state.update_data({'name': name[0], 'surname': name[1]})
+
+        kb = ReplyKeyboardBuilder()
+        kb.button(text=ts[lang]['to_menu'])
+        await message.answer(ts[lang]['enter_age'], reply_markup=kb.as_markup())
+        await state.set_state(IdGenerator.entering_age)
+
+    async def id_gen_final(self, message: types.Message, state: FSMContext, lang: str):
+        age = message.text
+        try:
+            age = datetime.strptime(age, '%d.%m.%Y')
+            await state.update_data({'day': age.day, 'month': age.month, 'year': age.year})
+            await state.set_state(IdGenerator.generating)
+            await self.id_generate(message, state, lang)
+        except ValueError:
+            await message.answer(ts[lang]['repeat_input'])
+            return
+
+
+    async def id_generate(self, message: types.Message, state: FSMContext, lang: str):
+        await message.answer(ts[lang]['wait_generating'])
+        stored_data = await state.get_data()
+        account = id_generator.Account(stored_data['name'], stored_data['surname'], stored_data['day'], stored_data['month'], stored_data['year'])
+
+        if stored_data['sex'] == 'male':
+            photo_dir = './faces/male'
+        else:
+            photo_dir = './faces/female'
+
+        photo_path = os.path.join(photo_dir, random.choice(os.listdir(photo_dir)))
+
+        result_path = os.path.join('./faces', f'{account.name}_{account.surname}.jpg')
+
+        with ProcessPoolExecutor() as executor:
+            print('execc')
+            loop = asyncio.get_event_loop()
+            await loop.run_in_executor(executor, id_generator.generate_document, account, photo_path, result_path, stored_data['grey'], stored_data['meta'])
+
+        kb = ReplyKeyboardBuilder()
+        kb.button(text=ts[lang]['one_more'])
+        kb.button(text=ts[lang]['to_menu'])
+
+        if os.path.exists(result_path):
+            input_file = types.FSInputFile(result_path)
+            await message.answer_document(input_file, reply_markup=kb.as_markup())
+            os.remove(result_path)
+        else:
+            await message.answer(ts[lang]['id_gen_err'], reply_markup=kb.as_markup())
+
+
+        # await state.clear()
+
+
+
+
 
     async def start_polling(self):
         await self.dp.start_polling(self.bot)
