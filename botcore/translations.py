@@ -1,13 +1,13 @@
 translations = {
     'ua':
         {
-            'menu_check_accs': 'Перевірити акаунти на блокування',
-            'menu_2fa': '2fa код',
-            'menu_tiktok': 'Завантажити відео з TikTok',
-            'menu_apps': 'Додатки Google Play',
-            'menu_id': 'Генератор ID',
+            'menu_check_accs': '✅️ Перевірити акаунти на блокування',
+            'menu_2fa': '🔒 2fa код',
+            'menu_tiktok': '📹 Завантажити відео з TikTok',
+            'menu_apps': '📱 Додатки Google Play',
+            'menu_id': '🆔 Генератор ID',
 
-            'to_menu': 'В меню',
+            'to_menu': '🏠 В меню',
 
             'start_msg': 'Виберіть дію з меню:',
 
@@ -39,32 +39,32 @@ translations = {
 
 
             'ask_meta': 'Чи потрібні вам метадані фото?',
-            'no_meta': 'Метадані не потрібні',
-            'random_meta': 'Випадкові метадані',
+            'no_meta': '❌ Метадані не потрібні',
+            'random_meta': '🎲 Випадкові метадані',
             'repeat_input': 'Помилкова відповідь, введіть ще раз коректно',
-            'man': 'Чоловік',
-            'woman': 'Жінка',
+            'man': '🕺 Чоловік',
+            'woman': '💃 Жінка',
             'select_sex': 'Виберіть стать:',
             'enter_name': 'Введіть ім\'я та прізвище:',
             'enter_age': 'Введіть дату народження (ДД.ММ.РРРР):',
             'select_photo_color': 'Виберіть колір фото:',
-            'color': 'Кольорове',
-            'black_white': 'Чорно-біле',
-            'one_more': 'Ще один варіант',
+            'color': '🎨 Кольорове',
+            'black_white': '⚫⚪ Чорно-біле',
+            'one_more': '🔄 Ще один варіант',
             'id_gen_err': 'Помилка генерації',
-            'wait_generating': 'Зачекайте, генерується фото...',
+            'wait_generating': '⏳ Зачекайте, генерується фото...',
 
 
         },
     'ru':
         {
-            'menu_check_accs': 'Проверить аккаунты на блокировки',
-            'menu_2fa': '2fa код',
-            'menu_tiktok': 'Загрузить видео с TikTok',
-            'menu_apps': 'Приложения Google Play',
-            'menu_id': 'Генератор ID',
+            'menu_check_accs': '✅️ Проверить аккаунты на блокировку',
+            'menu_2fa': '🔒 2fa код',
+            'menu_tiktok': '📹 Загрузить видео с TikTok',
+            'menu_apps': '📱 Приложения Google Play',
+            'menu_id': '🆔 Генератор ID',
 
-            'to_menu': 'В меню',
+            'to_menu': '🏠 В меню',
 
             'start_msg': 'Выберите действие из меню:',
 
@@ -94,32 +94,32 @@ translations = {
             'apps_blocked_warning': '🚨 ВНИМАНИЕ! Ваше приложение *{}* заблокировано',
 
             'ask_meta': 'Нужны ли вам метаданные фото?',
-            'no_meta': 'Метаданные не нужны',
-            'random_meta': 'Случайные метаданные',
+            'no_meta': '❌ Метаданные не нужны',
+            'random_meta': '🎲 Случайные метаданные',
             'repeat_input': 'Неверный ответ, введите еще раз корректно',
-            'man': 'Мужчина',
-            'woman': 'Женщина',
+            'man': '🕺 Мужчина',
+            'woman': '💃 Женщина',
             'select_sex': 'Выберите пол:',
             'enter_name': 'Введите имя и фамилию:',
             'enter_age': 'Введите дату рождения (ДД.ММ.ГГГГ):',
             'select_photo_color': 'Выберите цвет фотографии:',
-            'color': 'Цветное',
-            'black_white': 'Черно-белое',
-            'one_more': 'Еще один вариант',
+            'color': '🎨 Цветное',
+            'black_white': '⚫⚪ Черно-белое',
+            'one_more': '🔄 Еще один вариант',
             'id_gen_err': 'Ошибка генерации',
-            'wait_generating': 'Подождите, фото генерируется...',
+            'wait_generating': '⏳ Подождите, фото генерируется...',
 
 
         },
     'en':
         {
-            'menu_check_accs': 'Check accounts for bans',
-            'menu_2fa': '2fa code',
-            'menu_tiktok': 'Download video from TikTok',
-            'menu_apps': 'Google Play apps',
-            'menu_id': 'ID generator',
+            'menu_check_accs': '✅️ Check accounts for bans',
+            'menu_2fa': '🔒 2fa code',
+            'menu_tiktok': '📹 Download video from TikTok',
+            'menu_apps': '📱 Google Play apps',
+            'menu_id': '🆔 ID generator',
 
-            'to_menu': 'To menu',
+            'to_menu': '🏠 To menu',
 
             'start_msg': 'Choose an action from the menu:',
             'accs_ask_list': 'Send a list of account links or a txt file with links',
@@ -148,20 +148,20 @@ translations = {
             'apps_blocked_warning': '🚨 ATTENTION! Your app *{}* is blocked',
 
             'ask_meta': 'Do you need photo metadata?',
-            'no_meta': 'No metadata needed',
-            'random_meta': 'Random metadata',
+            'no_meta': '❌ No metadata needed',
+            'random_meta': '🎲 Random metadata',
             'repeat_input': 'Incorrect answer, enter again correctly',
-            'man': 'Male',
-            'woman': 'Female',
+            'man': '🕺 Male',
+            'woman': '💃 Female',
             'select_sex': 'Select sex:',
             'enter_name': 'Enter name and surname:',
             'enter_age': 'Enter date of birth (DD.MM.YYYY):',
             'select_photo_color': 'Select photo color:',
-            'color': 'Color',
-            'black_white': 'Black and white',
-            'one_more': 'One more variant',
+            'color': '🎨 Color',
+            'black_white': '⚫⚪ Black and white',
+            'one_more': '🔄 One more variant',
             'id_gen_err': 'Generation error',
-            'wait_generating': 'Wait, photo is generating...',
+            'wait_generating': '⏳ Wait, photo is generating...',
         }
 }
 

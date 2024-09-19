@@ -1,4 +1,6 @@
 import os
+import random
+
 from .random_metadata import add_random_metadata
 from PIL import Image, ImageDraw, ImageFont
 from rembg import remove
@@ -51,10 +53,10 @@ class TemplateInteractor:
         photo_to_paste_without_background.save(just_face_path)
         return just_face_path
 
+
+
     def insert_photo(self, photo_path, just_face_path, grey=False):
         face = Image.open(self.remove_photo_background(photo_path, just_face_path))
-
-        print(face.getexif())
 
         if grey:
             face = face.convert('LA')
@@ -75,26 +77,36 @@ class TemplateInteractor:
 
         self.template_image.paste(photo_to_paste_resized, (left, bottom - new_height), photo_to_paste_resized)
 
-    def save_image(self, output_path):
-        self.template_image.save(output_path)
+    def change_result_background(self, background_path):
+        id_image = self.template_image
+
+        background_image = Image.open(background_path)
+        background_image = background_image.resize(id_image.size)
+        background_image.paste(id_image, (0, 0), id_image)
+
+        self.template_image = background_image
+
+    def save_image_jpg(self, output_path):
+
+        self.template_image.convert("RGB").save(output_path)
 
 
 def generate_document(account, face_image_path, result_path, grey=False, add_metadata=False):
     try:
         template_interactor = TemplateInteractor('fonts/Montserrat-Medium.ttf',
                                                  'fonts/Montserrat-Bold.ttf', 36,
-                                                 'faces/template.jpg')
+                                                 'faces/template-nobg.png')
         template_interactor.write_name(account.name)
         template_interactor.write_surname(account.surname)
         template_interactor.write_birthdate('%s.%s.%s' % (account.dayOfBirth if int(account.dayOfBirth) >= 10 else '0' + str(account.dayOfBirth), (account.monthOfBirth if int(account.monthOfBirth) >= 10 else '0' + str(account.monthOfBirth)), (account.yearOfBirth)))
         just_face_path = f'faces/temp/face{account.name}{account.surname}.png'
         template_interactor.insert_photo(face_image_path, just_face_path, grey=grey)
-        template_interactor.save_image(result_path)
+        random_bg = 'faces/backgrounds/' + random.choice(os.listdir('faces/backgrounds'))
+        template_interactor.change_result_background(random_bg)
+        template_interactor.save_image_jpg(result_path)
         os.remove(just_face_path)
 
         if add_metadata:
             add_random_metadata(result_path)
     except Exception as e:
         print(e)
-
-

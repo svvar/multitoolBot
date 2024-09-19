@@ -96,7 +96,7 @@ class ArbitrageBot:
         kb.button(text=ts[lang]['menu_id'])
         kb.adjust(2)
 
-        await message.answer(ts[lang]['start_msg'], reply_markup=kb.as_markup())
+        await message.answer(ts[lang]['start_msg'], reply_markup=kb.as_markup(resize_keyboard=True))
         await state.clear()
 
 
@@ -349,7 +349,7 @@ class ArbitrageBot:
         reply_kb.button(text=ts[lang]['to_menu'])
         reply_kb.adjust(2)
 
-        await message.answer(ts[lang]['ask_meta'], reply_markup=reply_kb.as_markup())
+        await message.answer(ts[lang]['ask_meta'], reply_markup=reply_kb.as_markup(resize_keyboard=True))
         await state.set_state(IdGenerator.need_meta)
 
     async def id_gen_color(self, message: types.Message, state: FSMContext, lang: str):
@@ -369,7 +369,7 @@ class ArbitrageBot:
         reply_kb.button(text=ts[lang]['to_menu'])
         reply_kb.adjust(2)
 
-        await message.answer(ts[lang]['select_photo_color'], reply_markup=reply_kb.as_markup())
+        await message.answer(ts[lang]['select_photo_color'], reply_markup=reply_kb.as_markup(resize_keyboard=True))
         await state.set_state(IdGenerator.selecting_color)
 
     async def id_gen_sex(self, message: types.Message, state: FSMContext, lang: str):
@@ -389,7 +389,7 @@ class ArbitrageBot:
         reply_kb.button(text=ts[lang]['to_menu'])
         reply_kb.adjust(2)
 
-        await message.answer(ts[lang]['select_sex'], reply_markup=reply_kb.as_markup())
+        await message.answer(ts[lang]['select_sex'], reply_markup=reply_kb.as_markup(resize_keyboard=True))
         await state.set_state(IdGenerator.selecting_sex)
 
     async def id_gen_name(self, message: types.Message, state: FSMContext, lang: str):
@@ -404,7 +404,7 @@ class ArbitrageBot:
 
         kb = ReplyKeyboardBuilder()
         kb.button(text=ts[lang]['to_menu'])
-        await message.answer(ts[lang]['enter_name'], reply_markup=kb.as_markup())
+        await message.answer(ts[lang]['enter_name'], reply_markup=kb.as_markup(resize_keyboard=True))
         await state.set_state(IdGenerator.entering_name)
 
 
@@ -418,7 +418,7 @@ class ArbitrageBot:
 
         kb = ReplyKeyboardBuilder()
         kb.button(text=ts[lang]['to_menu'])
-        await message.answer(ts[lang]['enter_age'], reply_markup=kb.as_markup())
+        await message.answer(ts[lang]['enter_age'], reply_markup=kb.as_markup(resize_keyboard=True))
         await state.set_state(IdGenerator.entering_age)
 
     async def id_gen_final(self, message: types.Message, state: FSMContext, lang: str):
@@ -434,7 +434,10 @@ class ArbitrageBot:
 
 
     async def id_generate(self, message: types.Message, state: FSMContext, lang: str):
-        await message.answer(ts[lang]['wait_generating'])
+        kb = ReplyKeyboardBuilder()
+        kb.button(text=ts[lang]['to_menu'])
+
+        await message.answer(ts[lang]['wait_generating'], reply_markup=kb.as_markup(resize_keyboard=True))
         stored_data = await state.get_data()
         account = id_generator.Account(stored_data['name'], stored_data['surname'], stored_data['day'], stored_data['month'], stored_data['year'])
 
@@ -445,23 +448,20 @@ class ArbitrageBot:
 
         photo_path = os.path.join(photo_dir, random.choice(os.listdir(photo_dir)))
 
-        result_path = os.path.join('./faces', f'{account.name}_{account.surname}.jpg')
+        result_path = os.path.join('./faces', f'{account.name}_{account.surname}{message.message_id}.jpg')
 
-        with ProcessPoolExecutor() as executor:
-            print('execc')
+        with ProcessPoolExecutor(max_workers=10) as executor:
             loop = asyncio.get_event_loop()
             await loop.run_in_executor(executor, id_generator.generate_document, account, photo_path, result_path, stored_data['grey'], stored_data['meta'])
 
-        kb = ReplyKeyboardBuilder()
         kb.button(text=ts[lang]['one_more'])
-        kb.button(text=ts[lang]['to_menu'])
 
         if os.path.exists(result_path):
             input_file = types.FSInputFile(result_path)
-            await message.answer_document(input_file, reply_markup=kb.as_markup())
+            await message.answer_document(input_file, reply_markup=kb.as_markup(resize_keyboard=True))
             os.remove(result_path)
         else:
-            await message.answer(ts[lang]['id_gen_err'], reply_markup=kb.as_markup())
+            await message.answer(ts[lang]['id_gen_err'], reply_markup=kb.as_markup(resize_keyboard=True))
 
 
         # await state.clear()
