@@ -1,15 +1,14 @@
 import asyncio
-import configparser
+import config
 
 from botcore.bot import ArbitrageBot
 
 async def main():
-    config = configparser.ConfigParser()
-    config.read('config.ini')
 
-    bot = ArbitrageBot(token=config['bot']['token'])
+    bot = ArbitrageBot(token=config.TOKEN)
 
-    # await bot.check_apps_task()
+    await bot.check_apps_task()
+    await bot.rotate_proxy_task(config.PROXY_ROTATE)
     await bot.start_polling()
 
 

@@ -144,6 +144,25 @@ class ArbitrageBot:
             await message.bot(SendMediaGroup(chat_id=message.chat.id, media=message_files))
         await state.clear()
 
+    async def rotate_proxy_task(self, rotate_url):
+        await self.rotate_proxy(rotate_url)
+        scheduler = AsyncIOScheduler()
+        scheduler.add_job(self.rotate_proxy, 'interval', minutes=3, args=(rotate_url,))
+        scheduler.start()
+
+    async def rotate_proxy(self, rotate_url):
+        print('Rotating proxy...')
+        try:
+            async with self.http_session.get(rotate_url, ssl=False, timeout=15) as response:
+                if response.status == 200:
+                    print('Proxy rotated')
+                    return True
+                print('Proxy rotation failed')
+                return False
+        except asyncio.TimeoutError:
+            print('Proxy rotation failed')
+            return False
+
     async def start_2fa(self, message: types.Message, state: FSMContext, lang: str):
         keys = await storage.get_keys(message.from_user.id)
         keys = keys.split(' ') if keys else []
@@ -328,6 +347,7 @@ class ArbitrageBot:
         scheduler.start()
 
     async def check_apps(self):
+        print('Checking apps...')
         users_apps = await storage.get_all_apps()
         for app in users_apps:
             if app.status == 'blocked':
@@ -467,9 +487,7 @@ class ArbitrageBot:
         # await state.clear()
 
 
-
-
-
     async def start_polling(self):
+        print("Starting bot")
         await self.dp.start_polling(self.bot)
 

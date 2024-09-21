@@ -1,10 +1,9 @@
 import aiohttp
 import asyncio
 import re
+from aiohttp_socks import ProxyConnector
 
-
-# def read_file(file_path: str) -> list:
-
+import config
 
 def extract_links(message: str) -> list:
     fb_url_pattern = r'(https?://(?:\w+\.)?facebook\.com/\S+|www\.(?:\w+\.)?facebook\.com/\S+)'
@@ -12,7 +11,10 @@ def extract_links(message: str) -> list:
 
 
 async def check_urls(urls: list[str]):
-    async with aiohttp.ClientSession() as session:
+    proxy_url = f"{config.PROXY_PROTOCOL}://{config.PROXY_USERNAME}:{config.PROXY_PASSWORD}@{config.PROXY_HOST}:{config.PROXY_PORT}"
+    socks_connector = ProxyConnector.from_url(proxy_url)
+
+    async with aiohttp.ClientSession(connector=socks_connector) as session:
         tasks = [_check_url(session, url) for url in urls]
         results = await asyncio.gather(*tasks)
 
