@@ -192,7 +192,7 @@ class ArbitrageBot:
             await storage.add_key(message.from_user.id, key)
             await state.set_state(TwoFA.fetching_data)
 
-            await self.get_2fa(key, message, state)
+            await self.get_2fa(key, message, state, lang)
         else:
             await message.answer(ts[lang]['2fa_wrong_key'])
             await state.clear()
@@ -242,7 +242,7 @@ class ArbitrageBot:
 
         loop = asyncio.get_event_loop()
         with ThreadPoolExecutor() as executor:
-            video_path = await loop.run_in_executor(executor, downloader.download_tiktok, url, save_path)
+            video_path = await loop.run_in_executor(executor, downloader.download_tiktok_video, url, save_path)
 
         if video_path:
             input_file = types.FSInputFile(video_path)
