@@ -241,8 +241,9 @@ class ArbitrageBot:
         await state.clear()
 
         loop = asyncio.get_event_loop()
-        with ThreadPoolExecutor() as executor:
-            video_path = await loop.run_in_executor(executor, downloader.save_tiktok_video, url)
+        with ThreadPoolExecutor(max_workers=7) as executor:
+            download_folder = os.path.abspath('./downloads')
+            video_path = await loop.run_in_executor(executor, downloader.save_tiktok_video, url, download_folder)
 
         if video_path:
             input_file = types.FSInputFile(video_path)
