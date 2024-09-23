@@ -1,4 +1,3 @@
-import asyncio
 
 from sqlalchemy import Column, Integer, Text, func
 from sqlalchemy.orm import declarative_base
@@ -6,7 +5,7 @@ import sqlalchemy as sa
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 
 Base = declarative_base()
-engine = create_async_engine('sqlite+aiosqlite:///./users.sqlite')
+engine = create_async_engine('sqlite+aiosqlite:///./usersMY.sqlite')
 
 class Users(Base):
     __tablename__ = 'users'

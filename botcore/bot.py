@@ -19,6 +19,7 @@ from .middlewares import LangMiddleware
 from .translations import translations as ts, handlers_variants
 from . import storage
 
+
 class ArbitrageBot:
     def __init__(self, token: str):
         self.bot = Bot(token=token)
@@ -187,7 +188,7 @@ class ArbitrageBot:
         await self.get_2fa(key, callback.message, state, lang)
 
     async def get_2fa_msg(self, message: types.Message, state: FSMContext, lang: str):
-        key = message.text.strip()
+        key = message.text.strip().replace(' ', '')
         if twoFA.is_base32_encoded(key):
             await storage.add_key(message.from_user.id, key)
             await state.set_state(TwoFA.fetching_data)
@@ -235,14 +236,13 @@ class ArbitrageBot:
 
     async def tiktok_download(self, message: types.Message, state: FSMContext, lang: str):
         url = message.text
-        save_path = os.path.join(os.getcwd(), 'download_videos')
 
         # Clearing state early here to make other commands work correctly while downloading tiktok
         await state.clear()
 
         loop = asyncio.get_event_loop()
         with ThreadPoolExecutor() as executor:
-            video_path = await loop.run_in_executor(executor, downloader.download_tiktok_video, url, save_path)
+            video_path = await loop.run_in_executor(executor, downloader.save_tiktok_video, url)
 
         if video_path:
             input_file = types.FSInputFile(video_path)
@@ -358,6 +358,20 @@ class ArbitrageBot:
                 lang = await storage.get_lang(app.user_id)
                 await self.bot.send_message(app.user_id, ts[lang]['apps_blocked_warning'].format(app.name),
                                             parse_mode='markdown')
+
+        print('Apps checked')
+
+
+    async def _check_apps_2_WIP(self):
+        print('Checking apps...')
+        users_apps = await storage.get_all_apps()
+
+        to_check = []
+        for app in users_apps:
+            if app.status == 'blocked':
+                continue
+
+            to_check.append(app.url)
 
         print('Apps checked')
 
