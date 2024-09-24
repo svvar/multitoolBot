@@ -23,7 +23,9 @@ translations = {
             '2fa_code_msg': 'Ваш код: `{}` \nТермін дії: {} секунд',
 
             'tiktok_ask_url': 'Відправте посилання на відео з TikTok',
+            'tiktok_wait': 'Зачекайте, відео завантажується...',
             'tiktok_not_found': 'Відео не знайдено',
+            'tiktok_bad_url': 'Непідохдяще посилання, спробуйте ще раз',
 
             'apps_add_button': 'Додати додаток',
             'apps_delete_button': 'Видалити додаток',
@@ -42,6 +44,8 @@ translations = {
             'no_meta': '❌ Метадані не потрібні',
             'random_meta': '🎲 Випадкові метадані',
             'repeat_input': 'Помилкова відповідь, введіть ще раз коректно',
+            'ask_photo': 'Відправте фото або натисніть "Випадкове фото"',
+            'random_photo': 'Випадкове фото',
             'man': '🕺 Чоловік',
             'woman': '💃 Жінка',
             'select_sex': 'Виберіть стать:',
@@ -79,7 +83,9 @@ translations = {
             '2fa_code_msg': 'Ваш код: `{}` \nСрок действия: {} секунд',
 
             'tiktok_ask_url': 'Отправьте ссылку на видео с TikTok',
+            'tiktok_wait': 'Подождите, видео загружается...',
             'tiktok_not_found': 'Видео не найдено',
+            'tiktok_bad_url': 'Неподходящая ссылка, попробуйте еще раз',
 
             'apps_add_button': 'Добавить приложение',
             'apps_delete_button': 'Удалить приложение',
@@ -97,6 +103,8 @@ translations = {
             'no_meta': '❌ Метаданные не нужны',
             'random_meta': '🎲 Случайные метаданные',
             'repeat_input': 'Неверный ответ, введите еще раз корректно',
+            'ask_photo': 'Отправьте фото или нажмите "Случайное фото"',
+            'random_photo': 'Случайное фото',
             'man': '🕺 Мужчина',
             'woman': '💃 Женщина',
             'select_sex': 'Выберите пол:',
@@ -133,7 +141,9 @@ translations = {
             '2fa_code_msg': 'Your code: `{}` \nExpiration time: {} seconds',
 
             'tiktok_ask_url': 'Send a link to a video from TikTok',
+            'tiktok_wait': 'Wait, video is loading...',
             'tiktok_not_found': 'Video not found',
+            'tiktok_bad_url': 'Invalid link, try again',
 
             'apps_add_button': 'Add app',
             'apps_delete_button': 'Delete app',
@@ -151,6 +161,8 @@ translations = {
             'no_meta': '❌ No metadata needed',
             'random_meta': '🎲 Random metadata',
             'repeat_input': 'Incorrect answer, enter again correctly',
+            'ask_photo': 'Send a photo or click "Random photo"',
+            'random_photo': 'Random photo',
             'man': '🕺 Male',
             'woman': '💃 Female',
             'select_sex': 'Select sex:',

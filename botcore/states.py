@@ -23,6 +23,7 @@ class Apps(StatesGroup):
 
 class IdGenerator(StatesGroup):
     need_meta = State()
+    selecting_photo = State()
     selecting_color = State()
     selecting_sex = State()
     entering_name = State()

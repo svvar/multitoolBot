@@ -56,7 +56,8 @@ class ArbitrageBot:
         self.dp.message(Apps.entering_url)(self.add_app)
         self.dp.callback_query(Apps.selecting_to_delete)(self.delete_app)
 
-        self.dp.message(IdGenerator.need_meta)(self.id_gen_color)
+        self.dp.message(IdGenerator.need_meta)(self.id_gen_photo_ask)
+        self.dp.message(IdGenerator.selecting_photo)(self.id_gen_color)
         self.dp.message(IdGenerator.selecting_color)(self.id_gen_sex)
         self.dp.message(IdGenerator.selecting_sex)(self.id_gen_name)
         self.dp.message(IdGenerator.entering_name)(self.id_gen_age)
@@ -236,10 +237,15 @@ class ArbitrageBot:
 
     async def tiktok_download(self, message: types.Message, state: FSMContext, lang: str):
         url = message.text
+        if 'tiktok.com' not in url:
+            await message.answer(ts[lang]['tiktok_bad_url'])
+            await state.clear()
+            return
 
         # Clearing state early here to make other commands work correctly while downloading tiktok
         await state.clear()
 
+        await message.answer(ts[lang]['tiktok_wait'])
         loop = asyncio.get_event_loop()
         with ThreadPoolExecutor(max_workers=7) as executor:
             download_folder = os.path.abspath('./downloads')
@@ -387,7 +393,7 @@ class ArbitrageBot:
         await message.answer(ts[lang]['ask_meta'], reply_markup=reply_kb.as_markup(resize_keyboard=True))
         await state.set_state(IdGenerator.need_meta)
 
-    async def id_gen_color(self, message: types.Message, state: FSMContext, lang: str):
+    async def id_gen_photo_ask(self, message: types.Message, state: FSMContext, lang: str):
         meta = message.text
         if meta.lower() == ts[lang]['no_meta'].lower():
             await state.update_data({'meta': False})
@@ -396,6 +402,31 @@ class ArbitrageBot:
         else:
             await message.answer(ts[lang]['repeat_input'])
             return
+
+
+        reply_kb = ReplyKeyboardBuilder()
+        reply_kb.button(text=ts[lang]['random_photo'])
+        reply_kb.button(text=ts[lang]['to_menu'])
+        reply_kb.adjust(2)
+
+        await message.answer(ts[lang]['ask_photo'], reply_markup=reply_kb.as_markup(resize_keyboard=True))
+        await state.set_state(IdGenerator.selecting_photo)
+
+
+    async def id_gen_color(self, message: types.Message, state: FSMContext, lang: str):
+        if message.photo:
+            photo_id = message.photo[-1].file_id
+            photo_file = await self.bot.get_file(photo_id)
+            file_path = photo_file.file_path
+
+            await self.bot.download_file(file_path, f'./faces/temp/{photo_id}.jpg')
+            await state.update_data({'photo_path': f'./faces/temp/{photo_id}.jpg'})
+        elif message.text.lower() == ts[lang]['random_photo'].lower():
+            await state.update_data({'photo_path': None})
+        else:
+            await message.answer(ts[lang]['repeat_input'])
+            return
+
 
 
         reply_kb = ReplyKeyboardBuilder()
@@ -417,15 +448,21 @@ class ArbitrageBot:
             await message.answer(ts[lang]['repeat_input'])
             return
 
+        state_data = await state.get_data()
+        if state_data['photo_path']:
+            kb = ReplyKeyboardBuilder()
+            kb.button(text=ts[lang]['to_menu'])
+            await message.answer(ts[lang]['enter_name'], reply_markup=kb.as_markup(resize_keyboard=True))
+            await state.set_state(IdGenerator.entering_name)
+        else:
+            reply_kb = ReplyKeyboardBuilder()
+            reply_kb.button(text=ts[lang]['man'])
+            reply_kb.button(text=ts[lang]['woman'])
+            reply_kb.button(text=ts[lang]['to_menu'])
+            reply_kb.adjust(2)
 
-        reply_kb = ReplyKeyboardBuilder()
-        reply_kb.button(text=ts[lang]['man'])
-        reply_kb.button(text=ts[lang]['woman'])
-        reply_kb.button(text=ts[lang]['to_menu'])
-        reply_kb.adjust(2)
-
-        await message.answer(ts[lang]['select_sex'], reply_markup=reply_kb.as_markup(resize_keyboard=True))
-        await state.set_state(IdGenerator.selecting_sex)
+            await message.answer(ts[lang]['select_sex'], reply_markup=reply_kb.as_markup(resize_keyboard=True))
+            await state.set_state(IdGenerator.selecting_sex)
 
     async def id_gen_name(self, message: types.Message, state: FSMContext, lang: str):
         sex = message.text
@@ -476,20 +513,25 @@ class ArbitrageBot:
         stored_data = await state.get_data()
         account = id_generator.Account(stored_data['name'], stored_data['surname'], stored_data['day'], stored_data['month'], stored_data['year'])
 
-        if stored_data['sex'] == 'male':
-            photo_dir = './faces/male'
-        else:
-            photo_dir = './faces/female'
+        if not stored_data['photo_path']:
 
-        photo_path = os.path.join(photo_dir, random.choice(os.listdir(photo_dir)))
+            if stored_data['sex'] == 'male':
+                photo_dir = './faces/male'
+            else:
+                photo_dir = './faces/female'
+
+            photo_path = os.path.join(photo_dir, random.choice(os.listdir(photo_dir)))
+            kb.button(text=ts[lang]['one_more'])
+        else:
+            photo_path = stored_data['photo_path']
 
         result_path = os.path.join('./faces', f'{account.name}_{account.surname}{message.message_id}.jpg')
 
         with ProcessPoolExecutor(max_workers=10) as executor:
             loop = asyncio.get_event_loop()
+            if stored_data['photo_path']:
+                await loop.run_in_executor(executor, id_generator.detect_face, photo_path)
             await loop.run_in_executor(executor, id_generator.generate_document, account, photo_path, result_path, stored_data['grey'], stored_data['meta'])
-
-        kb.button(text=ts[lang]['one_more'])
 
         if os.path.exists(result_path):
             input_file = types.FSInputFile(result_path)
@@ -498,8 +540,8 @@ class ArbitrageBot:
         else:
             await message.answer(ts[lang]['id_gen_err'], reply_markup=kb.as_markup(resize_keyboard=True))
 
-
-        # await state.clear()
+        if stored_data['photo_path']:
+            os.remove(photo_path)
 
 
     async def start_polling(self):
