@@ -29,3 +29,9 @@ class IdGenerator(StatesGroup):
     entering_name = State()
     entering_age = State()
     generating = State()
+
+
+class Uniquilizer(StatesGroup):
+    media_input = State()
+    copies_num = State()
+    generating = State()

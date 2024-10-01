@@ -11,7 +11,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.utils.keyboard import ReplyKeyboardBuilder, InlineKeyboardBuilder
 from aiogram.methods import SendMediaGroup
 
-from functions import account_checking, downloader, twoFA, market_apps, id_generator
+from functions import account_checking, downloader, twoFA, market_apps, id_generator, image_uniqueizer, video_uniqueizer
 
 from .states import *
 from .callbacks import EditAppsMenuCallback
@@ -27,6 +27,9 @@ class ArbitrageBot:
         self.dp.update.middleware(LangMiddleware())
 
         self.http_session = aiohttp.ClientSession()
+        self.uniqualization_semaphore = asyncio.Semaphore(5)
+        self.id_semaphore = asyncio.Semaphore(5)
+        self.tiktok_semaphore = asyncio.Semaphore(3)
 
         self.register_handlers()
 
@@ -38,6 +41,7 @@ class ArbitrageBot:
         self.dp.message(F.text.lower().in_(handlers_variants('menu_tiktok')))(self.tiktok_download_start)
         self.dp.message(F.text.lower().in_(handlers_variants('menu_apps')))(self.apps_menu)
         self.dp.message(F.text.lower().in_(handlers_variants('menu_id')))(self.id_gen_start)
+        self.dp.message(F.text.lower().in_(handlers_variants('menu_unique')))(self.unique_ask_media)
 
         self.dp.message(F.text.lower().in_(handlers_variants('to_menu')))(self.show_menu)
 
@@ -63,6 +67,10 @@ class ArbitrageBot:
         self.dp.message(IdGenerator.entering_name)(self.id_gen_age)
         self.dp.message(IdGenerator.entering_age)(self.id_gen_final)
         self.dp.message(IdGenerator.generating, F.text.lower().in_(handlers_variants('one_more')))(self.id_generate)
+
+        self.dp.message(Uniquilizer.media_input)(self.unique_save_media)
+        self.dp.message(Uniquilizer.copies_num)(self.unique_num_copies)
+        self.dp.message(Uniquilizer.generating)(self.unique_generate)
 
     async def start_msg(self, message: types.Message, state: FSMContext):
         if not await storage.find_user(message.from_user.id):
@@ -96,6 +104,7 @@ class ArbitrageBot:
         kb.button(text=ts[lang]['menu_tiktok'])
         kb.button(text=ts[lang]['menu_apps'])
         kb.button(text=ts[lang]['menu_id'])
+        kb.button(text=ts[lang]['menu_unique'])
         kb.adjust(2)
 
         await message.answer(ts[lang]['start_msg'], reply_markup=kb.as_markup(resize_keyboard=True))
@@ -246,10 +255,12 @@ class ArbitrageBot:
         await state.clear()
 
         await message.answer(ts[lang]['tiktok_wait'])
-        loop = asyncio.get_event_loop()
-        with ThreadPoolExecutor(max_workers=7) as executor:
-            download_folder = os.path.abspath('./downloads')
-            video_path = await loop.run_in_executor(executor, downloader.save_tiktok_video, url, download_folder)
+
+        async with self.tiktok_semaphore:
+            loop = asyncio.get_event_loop()
+            with ThreadPoolExecutor(max_workers=7) as executor:
+                download_folder = os.path.abspath('./downloads')
+                video_path = await loop.run_in_executor(executor, downloader.save_tiktok_video, url, download_folder)
 
         if video_path:
             input_file = types.FSInputFile(video_path)
@@ -527,11 +538,12 @@ class ArbitrageBot:
 
         result_path = os.path.join('./faces', f'{account.name}_{account.surname}{message.message_id}.jpg')
 
-        with ProcessPoolExecutor(max_workers=10) as executor:
-            loop = asyncio.get_event_loop()
-            if stored_data['photo_path']:
-                await loop.run_in_executor(executor, id_generator.detect_face, photo_path)
-            await loop.run_in_executor(executor, id_generator.generate_document, account, photo_path, result_path, stored_data['grey'], stored_data['meta'])
+        async with self.id_semaphore:
+            with ProcessPoolExecutor(max_workers=10) as executor:
+                loop = asyncio.get_event_loop()
+                if stored_data['photo_path']:
+                    await loop.run_in_executor(executor, id_generator.detect_face, photo_path)
+                await loop.run_in_executor(executor, id_generator.generate_document, account, photo_path, result_path, stored_data['grey'], stored_data['meta'])
 
         if os.path.exists(result_path):
             input_file = types.FSInputFile(result_path)
@@ -542,6 +554,108 @@ class ArbitrageBot:
 
         if stored_data['photo_path']:
             os.remove(photo_path)
+
+    async def unique_ask_media(self, message: types.Message, state: FSMContext, lang: str):
+        kb = ReplyKeyboardBuilder()
+        kb.button(text=ts[lang]['to_menu'])
+
+        await message.answer(ts[lang]['unique_ask_media'], reply_markup=kb.as_markup(resize_keyboard=True))
+        await state.set_state(Uniquilizer.media_input)
+
+
+    async def unique_save_media(self, message: types.Message, state: FSMContext, lang: str):
+        if message.photo:
+            photo_id = message.photo[-1].file_id
+            file_unique_id = message.photo[-1].file_unique_id
+            photo_file = await self.bot.get_file(photo_id)
+            file_path = photo_file.file_path
+
+            os.makedirs(f'./downloads/{file_unique_id}', exist_ok=True)
+            await self.bot.download_file(file_path, f'./downloads/{file_unique_id}/{file_unique_id}.jpg')
+            await state.update_data({'photo_path': f'./downloads/{file_unique_id}/{file_unique_id}.jpg'})
+        elif message.video:
+            video_id = message.video.file_id
+            file_unique_id = message.video.file_unique_id
+            video_file = await self.bot.get_file(video_id)
+            file_path = video_file.file_path
+
+            os.makedirs(f'./downloads/{file_unique_id}', exist_ok=True)
+            await self.bot.download_file(file_path, f'./downloads/{file_unique_id}/{file_unique_id}.mp4')
+            await state.update_data({'video_path': f'./downloads/{file_unique_id}/{file_unique_id}.mp4'})
+        elif message.document:
+            doc_id = message.document.file_id
+            file_unique_id = message.document.file_unique_id
+
+            if message.document.file_size > 20 * 1024 * 1024:
+                await message.answer(ts[lang]['unique_file_too_large'])
+                return
+
+            doc_file = await self.bot.get_file(doc_id)
+            file_path = doc_file.file_path
+            file_name = message.document.file_name
+
+            if file_name.lower().endswith('.jpg') or file_name.lower().endswith('.jpeg') or file_name.lower().endswith('.png'):
+                os.makedirs(f'./downloads/{file_unique_id}', exist_ok=True)
+                await self.bot.download_file(file_path, f'./downloads/{file_unique_id}/{file_name}')
+                await state.update_data({'photo_path': f'./downloads/{file_unique_id}/{file_name}'})
+
+            elif file_name.lower().endswith('.mp4') or file_name.lower().endswith('.mov'):
+                os.makedirs(f'./downloads/{file_unique_id}', exist_ok=True)
+                await self.bot.download_file(file_path, f'./downloads/{file_unique_id}/{file_name}')
+                await state.update_data({'video_path': f'./downloads/{file_unique_id}/{file_name}'})
+            else:
+                await message.answer(ts['lang']['unique_unsupp_format'])
+                return
+
+        else:
+            await message.answer(ts['lang']['unique_send_media'])
+            return
+
+        await message.answer(ts[lang]['unique_ask_copies'])
+        await state.set_state(Uniquilizer.copies_num)
+
+    async def unique_num_copies(self, message: types.Message, state: FSMContext, lang: str):
+        if not message.text.isdigit():
+            await message.answer(ts['lang']['unique_num_copies'])
+            return
+        if int(message.text) > 20 or int(message.text) < 1:
+            await message.answer(ts['lang']['unique_num_copies'])
+            return
+
+        copies = int(message.text)
+
+        await state.update_data({'copies': copies})
+        await message.answer(ts[lang]['unique_wait'])
+        await state.set_state(Uniquilizer.generating)
+        await self.unique_generate(message, state, lang)
+
+
+    async def unique_generate(self, message: types.Message, state: FSMContext, lang: str):
+        async with self.uniqualization_semaphore:
+            state_data = await state.get_data()
+            copies = state_data['copies']
+
+            if 'video_path' in state_data:
+                media_path = state_data['video_path']
+
+                with ProcessPoolExecutor(max_workers=10) as executor:
+                    loop = asyncio.get_event_loop()
+                    zip_buffer = await loop.run_in_executor(executor, video_uniqueizer.unique_video_generator, media_path, copies)
+
+            elif 'photo_path' in state_data:
+                media_path = state_data['photo_path']
+
+                with ProcessPoolExecutor(max_workers=10) as executor:
+                    loop = asyncio.get_event_loop()
+                    zip_buffer = await loop.run_in_executor(executor, image_uniqueizer.unique_img_generator, media_path, copies)
+
+            input_file = types.BufferedInputFile(zip_buffer.getvalue(), zip_buffer.name)
+            await message.answer_document(input_file)
+
+            import shutil
+            shutil.rmtree(os.path.dirname(media_path))
+
+            await state.clear()
 
 
     async def start_polling(self):
