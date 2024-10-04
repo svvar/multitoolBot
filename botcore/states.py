@@ -35,3 +35,15 @@ class Uniquilizer(StatesGroup):
     media_input = State()
     copies_num = State()
     generating = State()
+
+
+class AdminMailing(StatesGroup):
+    selecting_lang = State()
+    entering_message = State()
+    asking_links = State()
+    process = State()
+
+class AdminWelcome(StatesGroup):
+    entering_message = State()
+    entering_links = State()
+    saving = State()

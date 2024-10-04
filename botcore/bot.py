@@ -17,20 +17,22 @@ from .states import *
 from .callbacks import EditAppsMenuCallback
 from .middlewares import LangMiddleware
 from .translations import translations as ts, handlers_variants
-from . import storage
+from . import storageV2 as storage
 
 
 class ArbitrageBot:
-    def __init__(self, token: str):
-        self.bot = Bot(token=token)
+    def __init__(self, bot: Bot):
+        self.bot = bot
         self.dp = Dispatcher()
         self.dp.update.middleware(LangMiddleware())
+
 
         self.http_session = aiohttp.ClientSession()
         self.uniqualization_semaphore = asyncio.Semaphore(5)
         self.id_semaphore = asyncio.Semaphore(5)
         self.tiktok_semaphore = asyncio.Semaphore(3)
 
+        self.load_start_msg()
         self.register_handlers()
 
     def register_handlers(self):
@@ -72,20 +74,75 @@ class ArbitrageBot:
         self.dp.message(Uniquilizer.copies_num)(self.unique_num_copies)
         self.dp.message(Uniquilizer.generating)(self.unique_generate)
 
+    def load_start_msg(self):
+        contents = os.listdir('./downloads/admin_welcome')
+        if 'text.txt' not in contents and 'media_id.txt' not in contents and 'links.txt' not in contents:
+            self.welcome_text = None
+            self.welcome_media_id = None
+            self.welcome_links = None
+            return
+
+        with open('./downloads/admin_welcome/text.txt', 'r') as msg_f:
+            msg = msg_f.read()
+            self.welcome_text = msg.strip()
+
+        with open('./downloads/admin_welcome/media_id.txt', 'r') as media_f:
+            media_id = media_f.read()
+            self.welcome_media_id = media_id.strip()
+
+        with open('./downloads/admin_welcome/links.txt', 'r') as links_f:
+            links = links_f.read()
+            self.welcome_links = links.strip()
+
+
+    async def send_custom_welcome_message(self, message: types.Message):
+        url_kb = None
+
+        if not self.welcome_text and not self.welcome_media_id:
+            return
+
+        if self.welcome_links:
+            url_kb = InlineKeyboardBuilder()
+            for link in self.welcome_links.split('\n'):
+                url_kb.button(text=link.rsplit(' ', 1)[0], url=link.rsplit(' ', 1)[1])
+            url_kb.adjust(1)
+
+        if self.welcome_media_id and url_kb:
+            media_type = self.welcome_media_id.split(' ')[0]
+            media_id = self.welcome_media_id.split(' ')[1]
+            if media_type == 'photo':
+                await message.answer_photo(photo=media_id, caption=self.welcome_text, reply_markup=url_kb.as_markup())
+            elif media_type == 'video':
+                await message.answer_video(video=media_id, caption=self.welcome_text, reply_markup=url_kb.as_markup())
+        elif url_kb:
+            await message.answer(self.welcome_text, reply_markup=url_kb.as_markup())
+        elif self.welcome_media_id:
+            media_type = self.welcome_media_id.split(' ')[0]
+            media_id = self.welcome_media_id.split(' ')[1]
+            if media_type == 'photo':
+                await message.answer_photo(photo=media_id, caption=self.welcome_text)
+            elif media_type == 'video':
+                await message.answer_video(video=media_id, caption=self.welcome_text)
+        else:
+            await message.answer(self.welcome_text)
+
+
     async def start_msg(self, message: types.Message, state: FSMContext):
         if not await storage.find_user(message.from_user.id):
-            await storage.add_user(message.from_user.id)
+            user = message.from_user
+            await storage.add_user(user.id, user.first_name, user.last_name, user.username, user.language_code)
 
+        await self.send_custom_welcome_message(message)
         await message.answer("Виберіть мову / Выберите язык / Select language:",
                              reply_markup=ReplyKeyboardBuilder()
-                             .button(text='🇺🇦 Українська').button(text='🇷🇺 Русский').button(text='🇺🇸 English').as_markup())
+                             .button(text='🇺🇦 Українська').button(text='🇷🇺 Русский').button(text='🇺🇸 English').as_markup(resize_keyboard=True))
 
         await state.set_state(Setup.choosing_lang)
 
     async def set_lang(self, message: types.Message, state: FSMContext):
         lang = message.text
         if 'українська' in lang.lower():
-            lang = 'ua'
+            lang = 'uk'
         elif 'русский' in lang.lower():
             lang = 'ru'
         elif 'english' in lang.lower():
@@ -661,4 +718,7 @@ class ArbitrageBot:
     async def start_polling(self):
         print("Starting bot")
         await self.dp.start_polling(self.bot)
+
+    def include_router(self, router):
+        self.dp.include_router(router)
 

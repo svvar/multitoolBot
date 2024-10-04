@@ -2,7 +2,7 @@ from typing import Callable, Dict, Any, Awaitable
 from aiogram import BaseMiddleware
 from aiogram.types import TelegramObject, Message
 
-from .storage import get_lang
+from .storageV2 import get_lang
 
 
 class LangMiddleware(BaseMiddleware):
