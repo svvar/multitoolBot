@@ -331,14 +331,15 @@ class ArbitrageBot:
         users_apps = await storage.get_user_apps(message.from_user.id)
         for app in users_apps:
             if await market_apps.check_app(self.http_session, app.url):
-                await storage.update_app_status(message.from_user.id, app.name, 'active')
+                await storage.update_app_status(app.id, 'active')
                 app.status = 'active'
             else:
-                await storage.update_app_status(message.from_user.id, app.name, 'blocked')
+                await storage.update_app_status(app.id, 'blocked')
+                await message.answer(ts[lang]['apps_blocked_warning'].format(app.app_name), parse_mode='markdown')
                 app.status = 'blocked'
 
         kb = InlineKeyboardBuilder()
-        if len(users_apps) < 5:
+        if len(users_apps) < 20:
             kb.button(text=ts[lang]['apps_add_button'], callback_data=EditAppsMenuCallback(action='add').pack())
         if users_apps:
             kb.button(text=ts[lang]['apps_delete_button'], callback_data=EditAppsMenuCallback(action='delete').pack())
@@ -350,7 +351,7 @@ class ArbitrageBot:
 
         msg = ""
         for app in users_apps:
-            msg += f"*{app.name}* "
+            msg += f"*{app.app_name}* "
             if app.status == 'active':
                 msg += '✅\n'
             else:
@@ -375,16 +376,22 @@ class ArbitrageBot:
             await state.clear()
 
         app_name = await market_apps.get_app_name(self.http_session, url)
+        url_app_id = market_apps.extract_id(url)
+        url = f'https://play.google.com/store/apps/details?id={url_app_id}'
+
         if not app_name:
             await message.answer(ts[lang]['apps_already_blocked'])
             await state.clear()
             return
-        elif await storage.find_app_by_name(message.from_user.id, app_name):
+
+        app_id = await storage.get_app_id_by_url_app_id(url_app_id)
+        if await storage.find_app_by_app_id(app_id, message.from_user.id):
             await message.answer(ts[lang]['apps_added_yet'])
             await state.clear()
             return
 
-        await storage.add_app(message.from_user.id, url, app_name)
+        app_id = await storage.add_app(url_app_id, app_name, url)
+        await storage.add_app_user(app_id, message.from_user.id)
         await message.answer(ts[lang]['apps_add_success'].format(app_name), parse_mode='markdown')
         await state.clear()
 
@@ -395,7 +402,7 @@ class ArbitrageBot:
         users_apps = await storage.get_user_apps(callback.from_user.id)
         kb = InlineKeyboardBuilder()
         for app in users_apps:
-            kb.button(text=app.name, callback_data=app.name)
+            kb.button(text=app.app_name, callback_data=str(app.id))
         kb.adjust(1)
 
         await self.bot.edit_message_text(chat_id=callback.message.chat.id,
@@ -405,8 +412,9 @@ class ArbitrageBot:
         await state.set_state(Apps.selecting_to_delete)
 
     async def delete_app(self, callback: types.CallbackQuery, state: FSMContext, lang: str):
-        app_name = callback.data
-        await storage.delete_app(callback.from_user.id, app_name)
+        app_id = int(callback.data)                      # id field in Apps table; NOT url_app_id field
+        app_name = await storage.get_app_name(app_id)
+        await storage.delete_app_user(app_id, callback.from_user.id)
         await self.bot.edit_message_text(chat_id=callback.message.chat.id,
                                          message_id=callback.message.message_id,
                                          text=ts[lang]['apps_delete_success'].format(app_name),
@@ -429,10 +437,12 @@ class ArbitrageBot:
                 continue
 
             if not await market_apps.check_app(self.http_session, app.url):
-                await storage.update_app_status(app.user_id, app.name, 'blocked')
-                lang = await storage.get_lang(app.user_id)
-                await self.bot.send_message(app.user_id, ts[lang]['apps_blocked_warning'].format(app.name),
-                                            parse_mode='markdown')
+                await storage.update_app_status(app.id, 'blocked')
+                users = await storage.get_users_of_app(app.id)
+                for user in users:
+                    lang = await storage.get_lang(user)
+                    await self.bot.send_message(user, ts[lang]['apps_blocked_warning'].format(app.app_name),
+                                                parse_mode='markdown')
 
         print('Apps checked')
 
@@ -485,11 +495,21 @@ class ArbitrageBot:
         if message.photo:
             photo_id = message.photo[-1].file_id
             photo_file = await self.bot.get_file(photo_id)
+            file_unique_id = message.photo[-1].file_unique_id
             file_path = photo_file.file_path
 
-            await self.bot.download_file(file_path, f'./faces/temp/{photo_id}.jpg')
-            await state.update_data({'photo_path': f'./faces/temp/{photo_id}.jpg'})
-        elif message.text.lower() == ts[lang]['random_photo'].lower():
+            await self.bot.download_file(file_path, f'./faces/temp/{file_unique_id}.jpg')
+            await state.update_data({'photo_path': f'./faces/temp/{file_unique_id}.jpg'})
+        elif message.document and message.document.mime_type.startswith('image'):
+            photo_id = message.document.file_id
+            photo_file = await self.bot.get_file(photo_id)
+            file_unique_id = message.document.file_unique_id
+            file_name = message.document.file_name
+            file_path = photo_file.file_path
+
+            await self.bot.download_file(file_path, f'./faces/temp/{file_unique_id}.{file_name.split(".")[-1]}')
+            await state.update_data({'photo_path': f'./faces/temp/{file_unique_id}.{file_name.split(".")[-1]}'})
+        elif message.text and message.text.lower() == ts[lang]['random_photo'].lower():
             await state.update_data({'photo_path': None})
         else:
             await message.answer(ts[lang]['repeat_input'])
@@ -672,11 +692,18 @@ class ArbitrageBot:
         await state.set_state(Uniquilizer.copies_num)
 
     async def unique_num_copies(self, message: types.Message, state: FSMContext, lang: str):
+        data = await state.get_data()
+
+        media_type = 'photo' if 'photo_path' in data else 'video'
+
         if not message.text.isdigit():
-            await message.answer(ts['lang']['unique_num_copies'])
+            await message.answer(ts['lang']['unique_ask_copies'])
             return
-        if int(message.text) > 20 or int(message.text) < 1:
-            await message.answer(ts['lang']['unique_num_copies'])
+        if media_type == 'photo' and int(message.text) > 20 or int(message.text) < 1:
+            await message.answer(ts['lang']['unique_ask_copies'])
+            return
+        elif media_type == 'video' and int(message.text) > 5 or int(message.text) < 1:
+            await message.answer(ts['lang']['unique_ask_copies'])
             return
 
         copies = int(message.text)

@@ -1,7 +1,6 @@
 import aiohttp
 import asyncio
 import re
-from aiohttp_socks import ProxyConnector
 
 import config
 
@@ -11,10 +10,10 @@ def extract_links(message: str) -> list:
 
 
 async def check_urls(urls: list[str]):
-    proxy_url = f"{config.PROXY_PROTOCOL}://{config.PROXY_USERNAME}:{config.PROXY_PASSWORD}@{config.PROXY_HOST}:{config.PROXY_PORT}"
-    socks_connector = ProxyConnector.from_url(proxy_url)
+    # proxy_url = f"{config.PROXY_PROTOCOL}://{config.PROXY_USERNAME}:{config.PROXY_PASSWORD}@{config.PROXY_HOST}:{config.PROXY_PORT}"
+    # socks_connector = ProxyConnector.from_url(proxy_url)
 
-    async with aiohttp.ClientSession(connector=socks_connector) as session:
+    async with aiohttp.ClientSession() as session:
         tasks = [_check_url(session, url) for url in urls]
         results = await asyncio.gather(*tasks)
 
@@ -39,10 +38,10 @@ async def _check_url(session, url):
         return (url, 'error')
 
 
-if __name__ == '__main__':
+# if __name__ == '__main__':
     # loop = asyncio.new_event_loop()
     # asyncio.set_event_loop(loop)
     # loop.run_until_complete(main())
 
-    msg = '232edcdhttps://mbasic.facebook.com/profile.php?id=61561485478909,61561485478909'
-    print(extract_links(msg))
+    # msg = '232edcdhttps://mbasic.facebook.com/profile.php?id=61561485478909,61561485478909'
+    # print(extract_links(msg))

@@ -1,12 +1,12 @@
 
-from sqlalchemy import Column, Integer, Text, DateTime, func, create_engine
+from sqlalchemy import Column, Integer, Text, DateTime, func, create_engine, or_, and_
 from sqlalchemy.orm import declarative_base
 import sqlalchemy as sa
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 
 Base = declarative_base()
 engine = create_async_engine('sqlite+aiosqlite:///./users.sqlite')
-# engine = create_engine('sqlite:///./users.sqlite')
+# engine = create_engine('sqlite:///../users.sqlite')
 
 class Users(Base):
     __tablename__ = 'users'
@@ -18,26 +18,30 @@ class Users(Base):
     tg_language = Column(Text)
     bot_language = Column(Text)
     registered_date = Column(DateTime, default=func.now())
-    # id = Column(Integer, primary_key=True, autoincrement=True)
-    # tg_id = Column(Integer)
-    # two_fa_keys = Column(Text)
-    # bot_lang = Column(Text)
+
 
 class TwoFaKeys(Base):
     __tablename__ = 'two_fa_keys'
 
-    # id = Column(Integer, primary_key=True, autoincrement=True)
     tg_id = Column(Integer, primary_key=True)
     keys = Column(Text)
+
 
 class Apps(Base):
     __tablename__ = 'apps'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    user_id = Column(Integer)
-    name = Column(Text)
+    url_app_id = Column(Text)
+    app_name = Column(Text)
     url = Column(Text)
     status = Column(Text)
+
+class AppUsers(Base):
+    __tablename__ = 'app_users'
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    app_id = Column(Integer)
+    user_id = Column(Integer)
 
 ### USERS
 async def find_user(tg_id):
@@ -47,8 +51,7 @@ async def find_user(tg_id):
 
 async def add_user(tg_id, name, surname, username, tg_language):
     async with AsyncSession(engine) as session:
-        user = Users(tg_id=tg_id, name=name, surname=surname, username=username, tg_language=tg_language)
-        session.add(user)
+        await session.execute(sa.insert(Users).values(tg_id=tg_id, name=name, surname=surname, username=username, tg_language=tg_language))
         await session.commit()
 
 async def get_users_dump():
@@ -56,16 +59,28 @@ async def get_users_dump():
         users = await session.execute(sa.select(Users))
         return users.scalars().all()
 
+async def get_all_user_ids():
+    async with AsyncSession(engine) as session:
+        users = await session.execute(sa.select(Users.tg_id))
+        return users.scalars().all()
+
 async def get_user_ids_by_lang(bot_lang):
     async with AsyncSession(engine) as session:
-        users = await session.execute(sa.select(Users.tg_id).where(Users.bot_language == bot_lang))
+        # users = await session.execute(sa.select(Users.tg_id).where(Users.bot_language == bot_lang))
+        users = await session.execute(sa.select(Users.tg_id).where(
+            or_(
+                Users.bot_language == bot_lang,
+                and_(Users.bot_language == None, Users.tg_language == bot_lang)
+            )
+        ))
         return users.scalars().all()
 
 
 async def add_key(tg_id, key):
     async with AsyncSession(engine) as session:
+        user = await session.execute(sa.select(TwoFaKeys.tg_id).where(TwoFaKeys.tg_id == tg_id))
+
         current_keys = await session.execute(sa.select(TwoFaKeys.keys).where(TwoFaKeys.tg_id == tg_id))
-        # current_keys = await session.execute(sa.select(Users.two_fa_keys).where(Users.tg_id == tg_id))
         current_keys = current_keys.scalar()
         current_keys = current_keys.split(' ') if current_keys else []
 
@@ -76,7 +91,10 @@ async def add_key(tg_id, key):
 
         keys_str = ' '.join(current_keys)
 
-        await session.execute(sa.update(TwoFaKeys).where(TwoFaKeys.tg_id == tg_id).values(two_fa_keys=keys_str))
+        if user.scalar():
+            await session.execute(sa.update(TwoFaKeys).where(TwoFaKeys.tg_id == tg_id).values(keys=keys_str))
+        else:
+            await session.execute(sa.insert(TwoFaKeys).values(tg_id=tg_id, keys=keys_str))
         await session.commit()
 
 
@@ -97,6 +115,21 @@ async def get_lang(tg_id):
         lang = await session.execute(sa.select(Users.bot_language).where(Users.tg_id == tg_id))
         return lang.scalar()
 
+async def get_lang_codes():
+    async with AsyncSession(engine) as session:
+        langs = await session.execute(sa.select(Users.bot_language).distinct().where(Users.bot_language != None))
+        return langs.scalars().all()
+
+async def count_users():
+    async with AsyncSession(engine) as session:
+        count = await session.execute(sa.select(func.count()).select_from(Users))
+        return count.scalar()
+
+async def count_users_by_code(language_code=None):
+    async with AsyncSession(engine) as session:
+        count = await session.execute(sa.select(func.count()).where(Users.bot_language == language_code))
+        return count.scalar()
+
 
 ### APPS
 
@@ -107,44 +140,67 @@ async def get_all_apps():
 
 async def get_user_apps(user_id):
     async with AsyncSession(engine) as session:
-        apps = await session.execute(sa.select(Apps).where(Apps.user_id == user_id))
+        app_ids = await session.execute(sa.select(AppUsers.app_id).where(AppUsers.user_id == user_id))
+        app_ids = app_ids.scalars().all()
+
+        apps = await session.execute(sa.select(Apps).where(Apps.id.in_(app_ids)))
         return apps.scalars().all()
 
-async def count_user_apps(user_id):
-    async with AsyncSession(engine) as session:
-        count = await session.execute(sa.select(func.count()).where(Apps.user_id == user_id))
-        return count.scalar()
 
-async def find_app_by_url(user_id, url):
+async def get_users_of_app(id):
     async with AsyncSession(engine) as session:
-        app = await session.execute(sa.select(Apps).where(Apps.user_id == user_id, Apps.url == url))
+        user_ids = await session.execute(sa.select(AppUsers.user_id).where(AppUsers.app_id == id))
+        user_ids = user_ids.scalars().all()
+
+        users = await session.execute(sa.select(Users.tg_id).where(Users.tg_id.in_(user_ids)))
+        return users.scalars().all()
+
+async def get_app_id_by_url_app_id(url_app_id):
+    async with AsyncSession(engine) as session:
+        app = await session.execute(sa.select(Apps.id).where(Apps.url_app_id == url_app_id))
         return app.scalar()
 
-async def find_app_by_name(user_id, name):
+async def find_app_by_app_id(app_id, user_id):
     async with AsyncSession(engine) as session:
-        app = await session.execute(sa.select(Apps).where(Apps.user_id == user_id, Apps.name == name))
+        app = await session.execute(sa.select(AppUsers).where(AppUsers.app_id == app_id, AppUsers.user_id == user_id))
         return app.scalar()
 
-async def add_app(user_id, url, name):
+
+async def get_app_name(id):
     async with AsyncSession(engine) as session:
-        await session.execute(sa.insert(Apps).values(user_id=user_id, url=url, name=name, status='pending'))
+        app = await session.execute(sa.select(Apps.app_name).where(Apps.id == id))
+        return app.scalar()
+
+async def add_app(url_app_id, app_name, url):
+    async with AsyncSession(engine) as session:
+        find_existing = await session.execute(sa.select(Apps.id).where(Apps.url_app_id == url_app_id))
+        existing = find_existing.scalar()
+        if existing:
+            return existing
+        else:
+            new_app_id = await session.execute(sa.insert(Apps).values(url_app_id=url_app_id, app_name=app_name, url=url, status='active').returning(Apps.id))
+            await session.commit()
+            return new_app_id.scalar()
+
+async def add_app_user(app_id, user_id):
+    async with AsyncSession(engine) as session:
+        await session.execute(sa.insert(AppUsers).values(app_id=app_id, user_id=user_id))
         await session.commit()
 
-async def delete_app(user_id, name):
+async def delete_app_user(app_id, user_id):
     async with AsyncSession(engine) as session:
-        await session.execute(sa.delete(Apps).where(Apps.user_id == user_id, Apps.name == name))
+        await session.execute(sa.delete(AppUsers).where(AppUsers.app_id == app_id, AppUsers.user_id == user_id))
         await session.commit()
 
-async def update_app_status(user_id, name, status):
+        other_users = await session.execute(sa.select(AppUsers.user_id).where(AppUsers.app_id == app_id))
+        other_users = other_users.scalars().all()
+        if not other_users:
+            await session.execute(sa.delete(Apps).where(Apps.id == app_id))
+            await session.commit()
+
+
+async def update_app_status(app_id, status):
     async with AsyncSession(engine) as session:
-        await session.execute(sa.update(Apps).where(Apps.user_id == user_id, Apps.name == name).values(status=status))
+        await session.execute(sa.update(Apps).where(Apps.id == app_id).values(status=status))
         await session.commit()
 
-
-# async def main():
-#     users = await get_all_user_ids()
-#     print(users)
-#
-# if __name__ == '__main__':
-#     import asyncio
-#     asyncio.run(main())

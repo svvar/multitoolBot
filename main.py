@@ -21,7 +21,7 @@ async def main():
     arbitrage_bot.include_router(admin_panel.router)
 
     await arbitrage_bot.check_apps_task()
-    await arbitrage_bot.rotate_proxy_task(config.PROXY_ROTATE)
+    # await arbitrage_bot.rotate_proxy_task(config.PROXY_ROTATE)
     await arbitrage_bot.start_polling()
 
 

@@ -41,6 +41,7 @@ class AdminMailing(StatesGroup):
     selecting_lang = State()
     entering_message = State()
     asking_links = State()
+    preview = State()
     process = State()
 
 class AdminWelcome(StatesGroup):

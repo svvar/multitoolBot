@@ -2,16 +2,37 @@ from aiogram import Router
 from aiogram import types, F, filters
 from aiogram.fsm.context import FSMContext
 from aiogram.utils.keyboard import ReplyKeyboardBuilder, InlineKeyboardBuilder
-from aiogram.exceptions import TelegramBadRequest
+from aiogram.exceptions import TelegramBadRequest, TelegramForbiddenError
 
+import validators
 import xlsxwriter
 import io
 import datetime
 
+
 from config import ADMINS
 from .translations import handlers_variants, translations as ts
-from .storageV2 import get_users_dump, get_user_ids_by_lang
+from .storageV2 import get_users_dump, get_user_ids_by_lang, get_lang_codes, count_users, count_users_by_code, get_all_user_ids
 from .states import AdminMailing, AdminWelcome
+
+
+def convert_to_buttons(message_text: str) -> list:
+    buttons = message_text.split('\n')
+    buttons_result = []
+
+    if len(buttons) > 3:
+        buttons = buttons[:3]
+
+    for b in buttons:
+        name = b.rsplit(' ', 1)[0].strip(" *")
+        url = b.rsplit(' ', 1)[1].strip(" *")
+        if validators.url(url):
+            buttons_result.append((name, url))
+        else:
+            raise ValueError(url)
+
+    return buttons_result
+
 
 class AdminPanel:
     def __init__(self, arbitrage_bot):
@@ -26,11 +47,14 @@ class AdminPanel:
         self.router.message(F.text.lower().in_(handlers_variants('admin_back')))(self.enter_admin_panel)
         self.router.message(F.text.lower().in_(handlers_variants('admin_dump_users')))(self.dump_users)
 
+        self.router.message(F.text.lower().in_(handlers_variants('admin_user_stats')))(self.show_statistics)
+
         self.router.message(F.text.lower().in_(handlers_variants('admin_setup_mailing')))(self.mailing_start)
         self.router.message(AdminMailing.selecting_lang)(self.mailing_message)
         self.router.message(AdminMailing.entering_message)(self.mailing_asking_links)
-        self.router.message(AdminMailing.asking_links, F.text.lower().in_(handlers_variants('admin_skip_links')))(self.mailing_process)
+        self.router.message(AdminMailing.asking_links, F.text.lower().in_(handlers_variants('admin_skip_links')))(self.mailing_preview)
         self.router.message(AdminMailing.asking_links)(self.mailing_links)
+        self.router.message(AdminMailing.process, F.text.lower().in_(handlers_variants('admin_mailing_go_button')))(self.mailing_process)
 
         self.router.message(F.text.lower().in_(handlers_variants('admin_setup_welcome')))(self.start_message_change)
         self.router.message(AdminWelcome.entering_message)(self.start_message_inline_links)
@@ -46,11 +70,12 @@ class AdminPanel:
             return
 
         admin_kb = ReplyKeyboardBuilder()
+        admin_kb.button(text=ts[lang]['admin_user_stats'])
         admin_kb.button(text=ts[lang]['admin_dump_users'])
         admin_kb.button(text=ts[lang]['admin_setup_mailing'])
         admin_kb.button(text=ts[lang]['admin_setup_welcome'])
         admin_kb.button(text=ts[lang]['to_menu'])
-        admin_kb.adjust(3)
+        admin_kb.adjust(2)
 
         await message.answer(text=ts[lang]['admin_panel'], reply_markup=admin_kb.as_markup(resize_keyboard=True))
 
@@ -88,6 +113,31 @@ class AdminPanel:
         input_doc = types.BufferedInputFile(buffer.getvalue(), filename=buffer.name)
         await message.answer_document(document=input_doc)
 
+    async def show_statistics(self, message: types.Message, lang: str):
+        if message.from_user.id not in ADMINS:
+            await message.answer(ts[lang]['admin_forbidden'])
+            return
+
+        lang_codes = {code: 0 for code in await get_lang_codes()}
+        total_users = await count_users()
+
+        for code in lang_codes:
+            lang_codes[code] = await count_users_by_code(code)
+
+
+
+        text = ts[lang]['admin_total_users'].format(total_users)
+        if lang_codes:
+            text += '\n'
+            for code, count in lang_codes.items():
+                text += '\n'
+                text += ts[lang]['admin_lang_users'].format(code, count)
+
+        not_set = await count_users_by_code(None)
+        text += '\n' + ts[lang]['admin_no_lang'].format(not_set)
+
+        await message.answer(text)
+
 
     async def mailing_start(self, message: types.Message, state: FSMContext, lang: str):
         if message.from_user.id not in ADMINS:
@@ -98,15 +148,16 @@ class AdminPanel:
         lang_kb.button(text='uk')
         lang_kb.button(text='ru')
         lang_kb.button(text='en')
+        lang_kb.button(text='ALL')
         lang_kb.button(text=ts[lang]['admin_back'])
-        lang_kb.adjust(3)
+        lang_kb.adjust(4)
 
         await message.answer(ts[lang]['admin_mailing_sel_lang'], reply_markup=lang_kb.as_markup(resize_keyboard=True))
         await state.set_state(AdminMailing.selecting_lang)
 
 
     async def mailing_message(self, message: types.Message, state: FSMContext, lang: str):
-        if message.text not in ['uk', 'ru', 'en']:
+        if message.text not in ['uk', 'ru', 'en', 'ALL']:
             await message.answer(ts[lang]['admin_mailing_sel_lang'])
             return
 
@@ -135,46 +186,85 @@ class AdminPanel:
 
 
     async def mailing_links(self, message: types.Message, state: FSMContext, lang: str):
-        buttons = message.text.split('\n')
+        if message.text:
+            try:
+                buttons_result = convert_to_buttons(message.text)
+                await state.update_data(buttons=buttons_result)
+                await state.set_state(AdminMailing.preview)
+                await self.mailing_preview(message, state, lang)
+            except Exception as e:
+                await message.answer(ts[lang]['admin_links_error'] + '\n\n' + str(e))
 
-        if len(buttons) > 3:
-            buttons = buttons[:3]
 
-        buttons = [(b.rsplit(' ', 1)[0].strip(), b.rsplit(' ', 1)[1].strip())for b in buttons]
+    async def mailing_preview(self, message: types.Message, state: FSMContext, lang: str):
+        data = await state.get_data()
+        msg_id = data['message_id']
 
-        await state.update_data(buttons=buttons)
+        if 'buttons' in data:
+            url_kb = InlineKeyboardBuilder()
+            for text, url in data['buttons']:
+                url_kb.button(text=text, url=url)
+
+            url_kb.adjust(1)
+
+            await self.bot.copy_message(chat_id=message.chat.id, from_chat_id=message.chat.id, message_id=msg_id, reply_markup=url_kb.as_markup())
+        else:
+            await self.bot.copy_message(chat_id=message.chat.id, from_chat_id=message.chat.id, message_id=msg_id)
+
+
+        ask_mailing_kb = ReplyKeyboardBuilder()
+        ask_mailing_kb.button(text=ts[lang]['admin_mailing_go_button'])
+        ask_mailing_kb.button(text=ts[lang]['admin_back'])
+        ask_mailing_kb.adjust(1)
+
+        await message.answer(ts[lang]['admin_mailing_preview'], reply_markup=ask_mailing_kb.as_markup(resize_keyboard=True))
         await state.set_state(AdminMailing.process)
-        await self.mailing_process(message, state, lang)
 
 
     async def mailing_process(self, message: types.Message, state: FSMContext, lang: str):
         data = await state.get_data()
         msg_id = data['message_id']
-        users = await get_user_ids_by_lang(data['lang'])
-
-        if message.from_user.id not in users:       # send to current admin independently of his language
-            users.append(message.from_user.id)
-
-        await message.answer(ts[lang]['admin_mailing_sending'], reply_markup=types.ReplyKeyboardRemove())
-
-        if 'buttons' in data:
-            kb = InlineKeyboardBuilder()
-            for text, url in data['buttons']:
-                kb.button(text=text, url=url)
-
-            kb.adjust(1)
-
-            for user in users:
-                try:
-                    await self.bot.copy_message(chat_id=user, from_chat_id=message.chat.id, message_id=msg_id, reply_markup=kb.as_markup())
-                except TelegramBadRequest as e:
-                    pass
+        if data['lang'] == 'ALL':
+            users = await get_all_user_ids()
         else:
-            for user in users:
-                try:
+            users = await get_user_ids_by_lang(data['lang'])
+
+        total = len(users)
+        successful = 0
+        failed = 0
+
+        if message.from_user.id in users:
+            users.remove(message.from_user.id)
+            total -= 1
+
+        await message.answer(ts[lang]['admin_mailing_sending'].format(data['lang']), reply_markup=types.ReplyKeyboardRemove())
+        progress = await message.answer(ts[lang]['admin_mailing_progress'].format(total, successful, failed))
+
+        mailing_kb = None
+        if 'buttons' in data:
+            mailing_kb = InlineKeyboardBuilder()
+            for text, url in data['buttons']:
+                mailing_kb.button(text=text, url=url)
+            mailing_kb.adjust(1)
+
+        for user in users:
+            try:
+                if mailing_kb:
+                    await self.bot.copy_message(chat_id=user, from_chat_id=message.chat.id, message_id=msg_id, reply_markup=mailing_kb.as_markup())
+                else:
                     await self.bot.copy_message(chat_id=user, from_chat_id=message.chat.id, message_id=msg_id)
-                except TelegramBadRequest as e:
-                    pass
+                successful += 1
+            except (TelegramBadRequest, TelegramForbiddenError) as e:
+                failed += 1
+
+            if (successful + failed) % 20 == 0 and (successful + failed) != total:
+                await progress.edit_text(ts[lang]['admin_mailing_progress'].format(total, successful, failed))
+            if (successful + failed) % total == 0 :
+                await progress.edit_text(ts[lang]['admin_mailing_progress'].format(total, successful, failed))
+
+
+
+        await message.answer(ts[lang]['admin_mailing_finished'])
         await state.clear()
         await self.enter_admin_panel(message, state, lang)
 
@@ -204,6 +294,9 @@ class AdminPanel:
             media_id = message.video.file_id
             media_type = 'video'
             msg = message.caption
+        elif message.document:
+            await message.answer(ts[lang]['admin_ask_not_document'])
+            return
 
         await state.update_data(msg=msg, media_id=media_id, media_type=media_type)
 
@@ -211,21 +304,17 @@ class AdminPanel:
         kb.button(text=ts[lang]['admin_skip_links'])
         kb.button(text=ts[lang]['admin_back'])
 
-        await message.answer(ts[lang]['admin_mailing_links'], reply_markup=kb.as_markup(resize_keyboard=True))
+        await message.answer(ts[lang]['admin_mailing_links'], reply_markup=kb.as_markup(resize_keyboard=True), parse_mode='markdown')
         await state.set_state(AdminWelcome.entering_links)
 
 
     async def start_message_saving_links(self, message: types.Message, state: FSMContext, lang: str):
         if message.text:
-            buttons = message.text.split('\n')
-
-            if len(buttons) > 3:
-                buttons = buttons[:3]
             try:
-                buttons = [(b.rsplit(' ', 1)[0].strip(), b.rsplit(' ', 1)[1].strip()) for b in buttons]
-                await state.update_data(buttons=buttons)
+                buttons_result = convert_to_buttons(message.text)
+                await state.update_data(buttons=buttons_result)
             except Exception as e:
-                await message.answer(ts[lang]['admin_links_error'])
+                await message.answer(ts[lang]['admin_links_error'] + '\n\n' + str(e))
 
         await self.start_message_preview(message, state, lang)
 
@@ -290,4 +379,7 @@ class AdminPanel:
         await message.answer(ts[lang]['admin_welcome_saved'])
         await self.enter_admin_panel(message, state, lang)
         self.arbitrage_bot.load_start_msg()
+
+
+
 
