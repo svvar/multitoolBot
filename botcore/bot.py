@@ -49,7 +49,9 @@ class ArbitrageBot:
 
         self.dp.message(Setup.choosing_lang)(self.set_lang)
 
-        self.dp.message(CheckingAccounts.start_checking)(self.on_account_list)
+        self.dp.message(CheckingAccounts.start_checking, F.text.lower().in_(handlers_variants('accs_check')))(self.check_links)
+        self.dp.message(CheckingAccounts.start_checking)(self.on_links_message)
+
 
         self.dp.message(TwoFA.key_input_msg)(self.get_2fa_msg)
         self.dp.message(TwoFA.key_input_callback)(self.get_2fa_msg)
@@ -169,17 +171,44 @@ class ArbitrageBot:
 
 
     async def check_account_blocked(self, message: types.Message, state: FSMContext, lang: str):
-        await message.answer(ts[lang]['accs_ask_list'])
+        kb = ReplyKeyboardBuilder()
+        kb.button(text=ts[lang]['accs_check'])
+        kb.button(text=ts[lang]['to_menu'])
+        kb.adjust(1)
+
+
+        await message.answer(ts[lang]['accs_ask_list'], reply_markup=kb.as_markup(resize_keyboard=True))
         await state.set_state(CheckingAccounts.start_checking)
+        await state.update_data({'messages': [], 'txt': None})
 
 
-    async def on_account_list(self, message: types.Message, state: FSMContext, lang: str):
-        if message.document:
+    async def on_links_message(self, message: types.Message, state: FSMContext, lang: str):
+        state_data = await state.get_data()
+        messages = state_data['messages']
+        txt = state_data['txt']
+
+        if message.document and not txt:
             with io.BytesIO() as file:
                 await message.bot.download(message.document.file_id, file)
                 raw_links = file.read().decode('utf-8')
-        else:
-            raw_links = message.text
+            await state.update_data({'txt': raw_links})
+
+        elif message.text and not txt:
+            if len(messages) == 10:
+                await message.answer(ts[lang]['accs_too_long'])
+                await state.clear()
+                await self.show_menu(message, state, lang)
+
+            messages.append(message.text)
+            await state.update_data({'messages': messages})
+
+
+    async def check_links(self, message: types.Message, state: FSMContext, lang: str):
+        state_data = await state.get_data()
+        messages = '\n'.join(state_data['messages'])
+        txt = state_data['txt']
+
+        raw_links = txt if txt else messages
 
         links = account_checking.extract_links(raw_links)
 
@@ -211,6 +240,7 @@ class ArbitrageBot:
         if message_files:
             await message.bot(SendMediaGroup(chat_id=message.chat.id, media=message_files))
         await state.clear()
+        await self.show_menu(message, state, lang)
 
     async def rotate_proxy_task(self, rotate_url):
         await self.rotate_proxy(rotate_url)

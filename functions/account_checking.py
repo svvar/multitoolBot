@@ -5,7 +5,7 @@ import re
 import config
 
 def extract_links(message: str) -> list:
-    fb_url_pattern = r'(https?://(?:\w+\.)?facebook\.com/\S+|www\.(?:\w+\.)?facebook\.com/\S+)'
+    fb_url_pattern = r'(https?://(?:\w+\.)?facebook\.com/\S+|www\.(?:\w+\.)?facebook\.com/\S+|\b\d{13,16}\b)'
     return re.findall(fb_url_pattern, message)
 
 
@@ -26,7 +26,11 @@ async def check_urls(urls: list[str]):
 
 async def _check_url(session, url):
     try:
-        async with session.head(url) as response:
+        if url.isnumeric():
+            full_url = f"https://www.facebook.com/profile.php?id={url}"
+        else:
+            full_url = url
+        async with session.head(full_url) as response:
             if 'Vary' not in response.headers:
                 # print(f"{url} - Активний")
                 return (url, 'active')
