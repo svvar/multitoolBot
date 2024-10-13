@@ -45,6 +45,7 @@ class ArbitrageBot:
         self.dp.message(F.text.lower().in_(handlers_variants('menu_id')))(self.id_gen_start)
         self.dp.message(F.text.lower().in_(handlers_variants('menu_unique')))(self.unique_ask_media)
 
+
         self.dp.message(F.text.lower().in_(handlers_variants('to_menu')))(self.show_menu)
 
         self.dp.message(Setup.choosing_lang)(self.set_lang)
@@ -164,6 +165,7 @@ class ArbitrageBot:
         kb.button(text=ts[lang]['menu_apps'])
         kb.button(text=ts[lang]['menu_id'])
         kb.button(text=ts[lang]['menu_unique'])
+        kb.button(text=ts[lang]['for_farmers'])
         kb.adjust(2)
 
         await message.answer(ts[lang]['start_msg'], reply_markup=kb.as_markup(resize_keyboard=True))

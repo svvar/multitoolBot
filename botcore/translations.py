@@ -95,6 +95,50 @@ translations = {
             'admin_lang_users': '{}: {} користувачів',
             'admin_no_lang': 'Мова не встановлена: {} користувачів',
 
+            'for_farmers': '🚀 Фармерам',
+            'farm_password_gen': '🔐 Генератор паролів',
+            'farm_name_gen': '👨 Генератор імен',
+            'farm_fan_page_gen': '⚡️ Генератор fan-page',
+
+            'farm_gen_error': 'Помилка генерації, спробуйте пізніше',
+
+            'password_gen_tweaking': 'Налаштуйте кнопками нижче',
+            'n_chars': '📏 Кількість символів',
+            'special_chars': '⭐ Спеціальні символи',
+            'letters': '🔤 Малі літери',
+            'uppercase': '🔠 Великі літери',
+            'send_as': '📤 Спосіб відправки',
+            'n_passwords': '🔑 Кількість паролів',
+            'generate_passwords': '⚙️ Згенерувати',
+            'password_enter_value': 'Введіть значення від {} до {}:',
+            'password_generating': '⏳ Генерація...',
+            'password_invalid_value': 'Некоректне значення, введіть ще раз',
+
+            'name_gen_sel_gender': 'Виберіть стать:',
+            'male': '🕺 Чоловіча',
+            'female': '💃 Жіноча',
+            'both': '👫 Обидві',
+
+            'name_gen_sel_country': 'Виберіть країну:',
+            'random_country': '🎲 Випадкова',
+
+            'fan_page_name': '🏷️ Назва',
+            'fan_page_address': '📍 Адреса',
+            'fan_page_phone': '📞 Телефон',
+            'fan_page_quote': '💬 Цитата',
+            'fan_page_all': '🌐 Все разом',
+            'fan_page_back': '↩️ Назад',
+
+            'fan_page_select_option': 'Виберіть пункт меню:',
+            'fan_page_ask_num_names': 'Введіть кількість назв:',
+            'fan_page_ask_num_addresses': 'Введіть кількість адрес:',
+            'fan_page_ask_num_phones': 'Введіть кількість номерів телефону:',
+            'fan_page_ask_num_quotes': 'Введіть кількість цитат:',
+            'fan_page_ask_num_all': 'Введіть кількість fan page:',
+            'fan_page_invalid_num': 'Введіть число від {} до {}',
+            'fan_page_all_answer': 'Назва fan page: {}\nАдреса: {}\nНомер телефону: {}\nЦитата: {}',
+
+
         },
     'ru':
         {
@@ -190,6 +234,46 @@ translations = {
             'admin_lang_users': '{}: {} пользователей',
             'admin_no_lang': 'Язык не установлен: {} пользователей',
 
+            'for_farmers': '🚀 Фармерам',
+            'farm_password_gen': '🔐 Генератор паролей',
+            'farm_name_gen': '👨 Генератор имен',
+            'farm_fan_page_gen': '⚡️ Генератор fan-page',
+
+            'farm_gen_error': 'Ошибка генерации, попробуйте позже',
+
+            'password_gen_tweaking': 'Настройте кнопками ниже',
+            'n_chars': '📏 Количество символов',
+            'special_chars': '⭐ Специальные символы',
+            'letters': '🔤 Маленькие буквы',
+            'uppercase': '🔠 Большие буквы',
+            'send_as': '📤 Способ отправки',
+            'n_passwords': '🔑 Количество паролей',
+            'generate_passwords': '⚙️ Сгенерировать',
+
+            'name_gen_sel_gender': 'Выберите пол:',
+            'male': '🕺 Мужской',
+            'female': '💃 Женский',
+            'both': '👫 Оба',
+
+            'name_gen_sel_country': 'Выберите страну:',
+            'random_country': '🎲 Случайная',
+
+            'fan_page_name': '🏷️ Название',
+            'fan_page_address': '📍 Адрес',
+            'fan_page_phone': '📞 Телефон',
+            'fan_page_quote': '💬 Цитата',
+            'fan_page_all': '🌐 Все вместе',
+            'fan_page_back': '↩️ Назад',
+
+            'fan_page_select_option': 'Выберите пункт меню:',
+            'fan_page_ask_num_names': 'Введите количество названий:',
+            'fan_page_ask_num_addresses': 'Введите количество адресов:',
+            'fan_page_ask_num_phones': 'Введите количество номеров телефона:',
+            'fan_page_ask_num_quotes': 'Введите количество цитат:',
+            'fan_page_ask_num_all': 'Введите количество fan page:',
+            'fan_page_invalid_num': 'Введите число от {} до {}',
+            'fan_page_all_answer': 'Название fan page: {}\nАдрес: {}\nНомер телефона: {}\nЦитата: {}',
+
         },
     'en':
         {
@@ -284,9 +368,128 @@ translations = {
             'admin_lang_users': '{}: {} users',
             'admin_no_lang': 'Language not set: {} users',
 
+            'for_farmers': '🚀 For farmers',
+            'farm_password_gen': '🔐 Password generator',
+            'farm_name_gen': '👨 Name generator',
+            'farm_fan_page_gen': '⚡️ Fan-page generator',
+
+            'farm_gen_error': 'Generation error, try later',
+
+            'password_gen_tweaking': 'Tweak with buttons below',
+            'n_chars': '📏 Number of characters',
+            'special_chars': '⭐ Special characters',
+            'letters': '🔤 Small letters',
+            'uppercase': '🔠 Capital letters',
+            'send_as': '📤 Send as',
+            'n_passwords': '🔑 Number of passwords',
+            'generate_passwords': '⚙️ Generate',
+
+            'name_gen_sel_gender': 'Select country:',
+            'random_country': '🎲 Random',
+
+            'fan_page_name': '🏷️ Name',
+            'fan_page_address': '📍 Address',
+            'fan_page_phone': '📞 Phone',
+            'fan_page_quote': '💬 Quote',
+            'fan_page_all': '🌐 All together',
+            'fan_page_back': '↩️ Back',
+
+            'fan_page_select_option': 'Select menu item:',
+            'fan_page_ask_num_names': 'Enter the number of names:',
+            'fan_page_ask_num_addresses': 'Enter the number of addresses:',
+            'fan_page_ask_num_phones': 'Enter the number of phone numbers:',
+            'fan_page_ask_num_quotes': 'Enter the number of quotes:',
+            'fan_page_ask_num_all': 'Enter the number of fan pages:',
+            'fan_page_invalid_num': 'Enter a number from {} to {}',
+            'fan_page_all_answer': 'Fan page name: {}\nAddress: {}\nPhone number: {}\nQuote: {}',
+
+
 
         }
 }
+
+countries = {
+    'uk':{
+        'az_AZ': '🇦🇿 Азербайджан', 'bg_BG': '🇧🇬 Болгарія', 'cs_CZ': '🇨🇿 Чехія', 'da_DK': '🇩🇰 Данія', 'de_AT': '🇦🇹 Австрія',
+        'de_CH': '🇨🇭 Швейцарія', 'de_DE': '🇩🇪 Німеччина', 'el_GR': '🇬🇷 Греція', 'en_AU': '🇦🇺 Австралія',
+        'en_GB': '🇬🇧 Великобританія', 'en_US': '🇺🇸 США', 'en_PH': '🇵🇭 Філіппіни', 'es_ES': '🇪🇸 Іспанія', 'es_MX': '🇲🇽 Мексика',
+        'es_CL': '🇨🇱 Чилі', 'et_EE': '🇪🇪 Естонія', 'fi_FI': '🇫🇮 Фінляндія', 'fr_FR': '🇫🇷 Франція', 'he_IL': '🇮🇱 Ізраїль',
+        'hi_IN': '🇮🇳 Індія', 'hr_HR': '🇭🇷 Хорватія', 'hu_HU': '🇭🇺 Угорщина', 'hy_AM': '🇦🇲 Вірменія', 'id_ID': '🇮🇩 Індонезія',
+        'it_IT': '🇮🇹 Італія', 'ja_JP': '🇯🇵 Японія', 'ko_KR': '🇰🇷 Південна Корея', 'lt_LT': '🇱🇹 Литва', 'lv_LV': '🇱🇻 Латвія',
+        'nl_NL': '🇳🇱 Нідерланди', 'pl_PL': '🇵🇱 Польща', 'pt_BR': '🇧🇷 Бразилія', 'pt_PT': '🇵🇹 Португалія', 'ro_RO': '🇷🇴 Румунія',
+        'ru_RU': '🇷🇺 Росія', 'sk_SK': '🇸🇰 Словаччина', 'sl_SI': '🇸🇮 Словенія', 'sv_SE': '🇸🇪 Швеція', 'tr_TR': '🇹🇷 Туреччина',
+        'uk_UA': '🇺🇦 Україна'
+    },
+    'ru':{
+        'az_AZ': '🇦🇿 Азербайджан', 'bg_BG': '🇧🇬 Болгария', 'cs_CZ': '🇨🇿 Чехия', 'da_DK': '🇩🇰 Дания', 'de_AT': '🇦🇹 Австрия',
+        'de_CH': '🇨🇭 Швейцария', 'de_DE': '🇩🇪 Германия', 'el_GR': '🇬🇷 Греция', 'en_AU': '🇦🇺 Австралия',
+        'en_GB': '🇬🇧 Великобритания', 'en_US': '🇺🇸 США', 'en_PH': '🇵🇭 Филиппины', 'es_ES': '🇪🇸 Испания', 'es_MX': '🇲🇽 Мексика',
+        'es_CL': '🇨🇱 Чили', 'et_EE': '🇪🇪 Эстония', 'fi_FI': '🇫🇮 Финляндия', 'fr_FR': '🇫🇷 Франция', 'he_IL': '🇮🇱 Израиль',
+        'hi_IN': '🇮🇳 Индия', 'hr_HR': '🇭🇷 Хорватия', 'hu_HU': '🇭🇺 Венгрия', 'hy_AM': '🇦🇲 Армения', 'id_ID': '🇮🇩 Индонезия',
+        'it_IT': '🇮🇹 Италия', 'ja_JP': '🇯🇵 Япония', 'ko_KR': '🇰🇷 Южная Корея', 'lt_LT': '🇱🇹 Литва', 'lv_LV': '🇱🇻 Латвия',
+        'nl_NL': '🇳🇱 Нидерланды', 'pl_PL': '🇵🇱 Польша', 'pt_BR': '🇧🇷 Бразилия', 'pt_PT': '🇵🇹 Португалия', 'ro_RO': '🇷🇴 Румыния',
+        'ru_RU': '🇷🇺 Россия', 'sk_SK': '🇸🇰 Словакия', 'sl_SI': '🇸🇮 Словения', 'sv_SE': '🇸🇪 Швеция', 'tr_TR': '🇹🇷 Турция',
+        'uk_UA': '🇺🇦 Украина'
+
+    },
+
+    'en':{
+        'az_AZ': '🇦🇿 Azerbaijan', 'bg_BG': '🇧🇬 Bulgaria', 'cs_CZ': '🇨🇿 Czech Republic', 'da_DK': '🇩🇰 Denmark', 'de_AT': '🇦🇹 Austria',
+        'de_CH': '🇨🇭 Switzerland', 'de_DE': '🇩🇪 Germany', 'el_GR': '🇬🇷 Greece', 'en_AU': '🇦🇺 Australia',
+        'en_GB': '🇬🇧 United Kingdom', 'en_US': '🇺🇸 United States', 'en_PH': '🇵🇭 Philippines', 'es_ES': '🇪🇸 Spain', 'es_MX': '🇲🇽 Mexico',
+        'es_CL': '🇨🇱 Chile', 'et_EE': '🇪🇪 Estonia', 'fi_FI': '🇫🇮 Finland', 'fr_FR': '🇫🇷 France', 'he_IL': '🇮🇱 Israel',
+        'hi_IN': '🇮🇳 India', 'hr_HR': '🇭🇷 Croatia', 'hu_HU': '🇭🇺 Hungary', 'hy_AM': '🇦🇲 Armenia', 'id_ID': '🇮🇩 Indonesia',
+        'it_IT': '🇮🇹 Italy', 'ja_JP': '🇯🇵 Japan', 'ko_KR': '🇰🇷 South Korea', 'lt_LT': '🇱🇹 Lithuania', 'lv_LV': '🇱🇻 Latvia',
+        'nl_NL': '🇳🇱 Netherlands', 'pl_PL': '🇵🇱 Poland', 'pt_BR': '🇧🇷 Brazil', 'pt_PT': '🇵🇹 Portugal', 'ro_RO': '🇷🇴 Romania',
+        'ru_RU': '🇷🇺 Russia', 'sk_SK': '🇸🇰 Slovakia', 'sl_SI': '🇸🇮 Slovenia', 'sv_SE': '🇸🇪 Sweden', 'tr_TR': '🇹🇷 Turkey',
+        'uk_UA': '🇺🇦 Ukraine'
+
+
+    }
+}
+locales = {
+    'az_AZ': 'Azerbaijan',
+    'bg_BG': 'Bulgaria',
+    'cs_CZ': 'Czech Republic',
+    'da_DK': 'Denmark',
+    'de_AT': 'Austria',
+    'de_CH': 'Switzerland',
+    'de_DE': 'Germany',
+    'el_GR': 'Greece',
+    'en_AU': 'Australia',
+    'en_GB': 'United Kingdom',
+    'en_US': 'United States',
+    'en_PH': 'Philippines',
+    'es_ES': 'Spain',
+    'es_MX': 'Mexico',
+    'es_CL': 'Chile',
+    'et_EE': 'Estonia',
+    'fi_FI': 'Finland',
+    'fr_FR': 'France',
+    'he_IL': 'Israel',
+    'hi_IN': 'India',
+    'hr_HR': 'Croatia',
+    'hu_HU': 'Hungary',
+    'hy_AM': 'Armenia',
+    'id_ID': 'Indonesia',
+    'it_IT': 'Italy',
+    'ja_JP': 'Japan',
+    'ko_KR': 'South Korea',
+    'lt_LT': 'Lithuania',
+    'lv_LV': 'Latvia',
+    'nl_NL': 'Netherlands',
+    'pl_PL': 'Poland',
+    'pt_BR': 'Brazil',
+    'pt_PT': 'Portugal',
+    'ro_RO': 'Romania',
+    'ru_RU': 'Russia',
+    'sk_SK': 'Slovakia',
+    'sl_SI': 'Slovenia',
+    'sv_SE': 'Sweden',
+    'tr_TR': 'Turkey',
+    'uk_UA': 'Ukraine',
+}
+
 
 
 def handlers_variants(key_string):

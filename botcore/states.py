@@ -48,3 +48,33 @@ class AdminWelcome(StatesGroup):
     entering_message = State()
     entering_links = State()
     saving = State()
+
+
+class PasswordGen(StatesGroup):
+    tweaking = State()
+    changing_chars = State()
+    changing_amount = State()
+
+
+class NameGen(StatesGroup):
+    selecting_gender = State()
+    selecting_country = State()
+
+class FanPageName(StatesGroup):
+    entering_amount = State()
+
+class AddressGen(StatesGroup):
+    selecting_country = State()
+    entering_amount = State()
+
+class PhoneGen(StatesGroup):
+    selecting_country = State()
+    entering_amount = State()
+
+class QuoteGen(StatesGroup):
+    selecting_country = State()
+    entering_amount = State()
+
+class AllFanPageGen(StatesGroup):
+    selecting_country = State()
+    entering_amount = State()

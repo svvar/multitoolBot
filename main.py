@@ -4,6 +4,7 @@ import os
 
 from botcore.bot import ArbitrageBot
 from botcore.admin import AdminPanel
+from botcore.for_farmers import ForFarmers
 from aiogram import Bot
 
 async def main():
@@ -17,8 +18,10 @@ async def main():
 
     arbitrage_bot = ArbitrageBot(tg_bot)
     admin_panel = AdminPanel(arbitrage_bot)
+    farmers = ForFarmers(arbitrage_bot)
 
     arbitrage_bot.include_router(admin_panel.router)
+    arbitrage_bot.include_router(farmers.router)
 
     await arbitrage_bot.check_apps_task()
     # await arbitrage_bot.rotate_proxy_task(config.PROXY_ROTATE)
