@@ -23,22 +23,17 @@ async def get_app_name(session, url):
             return False
 
 
-async def check_app(session, url):
-    async with session.get(url) as response:
-        if response.status == 200:
-            return True
-        else:
-            return False
-
-# async def check_apps(session, apps: list[tuple[str, str]]):
-#     results = []
-#     for url, name in apps:
-#         if await check_app(session, url):
-#             results.append((url, name, 'active'))
+# async def check_app(session, url):
+#     async with session.get(url) as response:
+#         if response.status == 200:
+#             return True
 #         else:
-#             results.append((url, name, 'blocked'))
-#     return results
+#             return False
 
-# url = ('https://play.google.com/store/apps/details?id=com.supercell.clashroyale')
-#
-# print(extract_id(url))
+async def check_app(session, app):
+    async with session.get(app.url) as response:
+        if response.status == 200:
+            return app, True
+        else:
+            return app, False
+

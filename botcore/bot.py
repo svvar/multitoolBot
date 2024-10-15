@@ -28,8 +28,8 @@ class ArbitrageBot:
 
 
         self.http_session = aiohttp.ClientSession()
-        self.uniqualization_semaphore = asyncio.Semaphore(5)
-        self.id_semaphore = asyncio.Semaphore(5)
+        self.uniqualization_semaphore = asyncio.Semaphore(3)
+        self.id_semaphore = asyncio.Semaphore(3)
         self.tiktok_semaphore = asyncio.Semaphore(3)
 
         self.load_start_msg()
@@ -358,20 +358,24 @@ class ArbitrageBot:
         else:
             await message.answer(ts[lang]['tiktok_not_found'])
 
-
     async def apps_menu(self, message: types.Message, state: FSMContext, lang: str):
         users_apps = await storage.get_user_apps(message.from_user.id)
-        for app in users_apps:
-            if await market_apps.check_app(self.http_session, app.url):
-                await storage.update_app_status(app.id, 'active')
-                app.status = 'active'
-            else:
-                await storage.update_app_status(app.id, 'blocked')
-                await message.answer(ts[lang]['apps_blocked_warning'].format(app.app_name), parse_mode='markdown')
-                app.status = 'blocked'
+        tasks = [market_apps.check_app(self.http_session, app) for app in users_apps]
+        results = await asyncio.gather(*tasks)
+
+        banned_tasks = [market_apps.check_app(self.http_session, app) for app, status in results if not status]
+        banned_results = await asyncio.gather(*banned_tasks)
+
+        for app, status in banned_results:
+            await storage.update_app_status(app.id, 'blocked')
+            users = await storage.get_users_of_app(app.id)
+            for user in users:
+                lang = await storage.get_lang(user)
+                await self.bot.send_message(user, ts[lang]['apps_blocked_warning'].format(app.app_name),
+                                            parse_mode='markdown')
 
         kb = InlineKeyboardBuilder()
-        if len(users_apps) < 20:
+        if len(users_apps) < 15:
             kb.button(text=ts[lang]['apps_add_button'], callback_data=EditAppsMenuCallback(action='add').pack())
         if users_apps:
             kb.button(text=ts[lang]['apps_delete_button'], callback_data=EditAppsMenuCallback(action='delete').pack())
@@ -381,16 +385,17 @@ class ArbitrageBot:
             await message.answer(ts[lang]['apps_no_apps'], reply_markup=kb.as_markup())
             return
 
+        final_results = banned_results
+        final_results.extend([(app, status) for app, status in results if status])
         msg = ""
-        for app in users_apps:
+        for app, status in final_results:
             msg += f"*{app.app_name}* "
-            if app.status == 'active':
+            if status:
                 msg += '✅\n'
             else:
                 msg += '❌\n'
 
         await message.answer(msg, reply_markup=kb.as_markup(), parse_mode='markdown')
-
 
     async def add_app_request(self, callback: types.CallbackQuery, state: FSMContext, lang: str):
         await callback.answer()
@@ -461,34 +466,53 @@ class ArbitrageBot:
         scheduler.add_job(self.check_apps, 'interval', minutes=30)
         scheduler.start()
 
+    # async def check_apps(self):
+    #     print('Checking apps...')
+    #     users_apps = await storage.get_all_apps()
+    #     for app in users_apps:
+    #         if app.status == 'blocked':
+    #             continue
+    #
+    #         if not await market_apps.check_app(self.http_session, app.url):
+    #             await storage.update_app_status(app.id, 'blocked')
+    #             users = await storage.get_users_of_app(app.id)
+    #             for user in users:
+    #                 lang = await storage.get_lang(user)
+    #                 await self.bot.send_message(user, ts[lang]['apps_blocked_warning'].format(app.app_name),
+    #                                             parse_mode='markdown')
+    #
+    #     print('Apps checked')
+
+
     async def check_apps(self):
         print('Checking apps...')
-        users_apps = await storage.get_all_apps()
-        for app in users_apps:
-            if app.status == 'blocked':
-                continue
+        semaphore = asyncio.Semaphore(10)
 
-            if not await market_apps.check_app(self.http_session, app.url):
+        # limit max number of concurrent checks
+        async def semaphore_check_app(app):
+            async with semaphore:
+                return await market_apps.check_app(self.http_session, app)
+
+        # first check - all apps
+        users_apps = await storage.get_all_apps()
+        to_check = [app for app in users_apps if app.status != 'blocked']
+        tasks = [semaphore_check_app(app) for app in to_check]
+        results = await asyncio.gather(*tasks)
+
+        # second check - only failed apps
+        to_check = [app for app, status in results if not status]
+        retry_banned = [semaphore_check_app(app) for app in to_check]
+        results = await asyncio.gather(*retry_banned)
+
+        # if failed again - update status and notify users
+        for app, status in results:
+            if not status:
                 await storage.update_app_status(app.id, 'blocked')
                 users = await storage.get_users_of_app(app.id)
                 for user in users:
                     lang = await storage.get_lang(user)
                     await self.bot.send_message(user, ts[lang]['apps_blocked_warning'].format(app.app_name),
                                                 parse_mode='markdown')
-
-        print('Apps checked')
-
-
-    async def _check_apps_2_WIP(self):
-        print('Checking apps...')
-        users_apps = await storage.get_all_apps()
-
-        to_check = []
-        for app in users_apps:
-            if app.status == 'blocked':
-                continue
-
-            to_check.append(app.url)
 
         print('Apps checked')
 
