@@ -1,0 +1,20 @@
+# Ignore compiled Python files
+*.pyc
+
+# Ignore all files in the temp directory
+temp/
+
+.venv
+.idea
+
+users.sqlite
+usersMY.sqlite
+companies.sqlite
+parse_companies.py
+parse_bs4.py
+
+assets/female
+assets/male
+assets/selfieGenerator
+
+config.ini

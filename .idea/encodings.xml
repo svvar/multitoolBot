@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/RUS_quotes.txt" charset="windows-1251" />
+    <file url="file://$PROJECT_DIR$/UKR_quotes.txt" charset="windows-1251" />
+    <file url="file://$PROJECT_DIR$/downloads/admin_welcome/text.txt" charset="windows-1251" />
+    <file url="file://$PROJECT_DIR$/site_save/ru-brightdata/brightdata.com/blog/how-tos/web-scraping-with-python.html" charset="UTF-8" />
+  </component>
+</project>
