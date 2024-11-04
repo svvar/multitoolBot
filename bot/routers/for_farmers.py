@@ -14,7 +14,7 @@ from bot.core.locale_helper import locales, countries
 from bot.core.states import PasswordGen, NameGen, FanPageName, AddressGen, PhoneGen, QuoteGen, AllFanPageGen
 from bot.core.callbacks import CountryPageCallback
 from bot.core.storage.quotes_storage import get_random_quotes
-from bot.functions.fan_page import generate_names_task, generate_addresses, generate_phones, password_gen
+from bot.functions.fan_page import generate_names_task, generate_addresses, generate_phones, password_gen, generate_fan_page_names
 
 
 farmers_router = Router()
@@ -268,9 +268,14 @@ async def switch_country_page(callback: types.CallbackQuery, state: FSMContext):
 
     locale = I18n.get_current()
     kb = _countries_kb(current_page, country_pages, locale.current_locale)
-    await callback.bot.edit_message_reply_markup(chat_id=callback.message.chat.id,
-                                                 message_id=data['this_message_id'],
-                                                 reply_markup=kb.as_markup())
+    if 'this_message_id' in data:
+        await callback.bot.edit_message_reply_markup(chat_id=callback.message.chat.id,
+                                                     message_id=data['this_message_id'],
+                                                     reply_markup=kb.as_markup())
+    else:
+        await callback.bot.edit_message_reply_markup(chat_id=callback.message.chat.id,
+                                                     message_id=data['locale_message_id'],
+                                                     reply_markup=kb.as_markup())
     await state.update_data(country_page=current_page)
 
 
@@ -509,7 +514,7 @@ async def fan_page_all_gen(message: types.Message, state: FSMContext):
 
     async with gen_semaphore:
         loop = asyncio.get_event_loop()
-        names = loop.run_in_executor(executor, fan_page.generate_fan_page_names, amount)
+        names = loop.run_in_executor(executor, generate_fan_page_names, amount)
         addresses = generate_addresses(locale, amount)
         phones = loop.run_in_executor(executor, generate_phones, locale, amount)
         quotes = get_random_quotes(locale, amount)

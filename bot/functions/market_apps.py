@@ -13,7 +13,7 @@ def extract_id(url):
         return None
 
 async def get_app_name(session, url):
-    async with session.get(url) as response:
+    async with session.get(url, ssl=False) as response:
         if response.status == 200:
             text = await response.text()
             soup = bs4.BeautifulSoup(text, 'html.parser')
@@ -31,7 +31,7 @@ async def get_app_name(session, url):
 #             return False
 
 async def check_app(session, app):
-    async with session.get(app.url) as response:
+    async with session.get(app.url, ssl=False) as response:
         if response.status == 200:
             return app, True
         else:

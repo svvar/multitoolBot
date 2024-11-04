@@ -38,7 +38,7 @@ def save_tiktok_video(video_url, download_folder):
     if response.status_code != 200:
         return None
 
-    url_regex = '(?<=\.com/)(.+?)(?=\?|$)'
+    url_regex = r'(?<=\.com/)(.+?)(?=\?|$)'
     regex_url = re.findall(url_regex, video_url)[0]
     video_fn = regex_url.replace('/', '_') + '.mp4'
 

@@ -81,7 +81,7 @@ async def generate_addresses(lang_code, n_addresses):
 
 
 async def _address_request(session, url):
-    async with session.get(url) as response:
+    async with session.get(url, ssl=False) as response:
         if response.status == 200:
             soup = bs4.BeautifulSoup(await response.text(), 'html.parser')
             address = soup.find('div', class_='panel-body').find('h3')

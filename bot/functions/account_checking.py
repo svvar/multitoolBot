@@ -32,7 +32,7 @@ async def _check_url(session, url):
             full_url = f"https://www.facebook.com/profile.php?id={url}"
         else:
             full_url = url
-        async with session.head(full_url) as response:
+        async with session.head(full_url, ssl=False) as response:
             if 'Vary' not in response.headers:
                 # print(f"{url} - Активний")
                 return (url, 'active')

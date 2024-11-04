@@ -27,28 +27,6 @@ async def check_account_blocked(message: types.Message, state: FSMContext):
     await state.update_data({'messages': [], 'txt': None})
 
 
-@acc_check_router.message(CheckingAccounts.start_checking)
-async def on_links_message(message: types.Message, state: FSMContext):
-    state_data = await state.get_data()
-    messages = state_data['messages']
-    txt = state_data['txt']
-
-    if message.document and not txt:
-        with io.BytesIO() as file:
-            await message.bot.download(message.document.file_id, file)
-            raw_links = file.read().decode('utf-8')
-        await state.update_data({'txt': raw_links})
-
-    elif message.text and not txt:
-        if len(messages) == 10:
-            await message.answer(_('Забагато повідомлень, спробуйте менше'))
-            await state.clear()
-            await show_menu(message, state)
-
-        messages.append(message.text)
-        await state.update_data({'messages': messages})
-
-
 @acc_check_router.message(CheckingAccounts.start_checking, F.text == __('Почати перевірку'))
 async def check_links(message: types.Message, state: FSMContext):
     state_data = await state.get_data()
@@ -88,3 +66,25 @@ async def check_links(message: types.Message, state: FSMContext):
         await message.bot(SendMediaGroup(chat_id=message.chat.id, media=message_files))
     await state.clear()
     await show_menu(message, state)
+
+
+@acc_check_router.message(CheckingAccounts.start_checking)
+async def on_links_message(message: types.Message, state: FSMContext):
+    state_data = await state.get_data()
+    messages = state_data['messages']
+    txt = state_data['txt']
+
+    if message.document and not txt:
+        with io.BytesIO() as file:
+            await message.bot.download(message.document.file_id, file)
+            raw_links = file.read().decode('utf-8')
+        await state.update_data({'txt': raw_links})
+
+    elif message.text and not txt:
+        if len(messages) == 10:
+            await message.answer(_('Забагато повідомлень, спробуйте менше'))
+            await state.clear()
+            await show_menu(message, state)
+
+        messages.append(message.text)
+        await state.update_data({'messages': messages})

@@ -59,7 +59,7 @@ async def get_2fa(key, message: types.Message, state: FSMContext):
         await message.bot.delete_message(chat_id=message.chat.id, message_id=state_data['select_key_msg'])
 
     while await state.get_state() == TwoFA.fetching_data:
-        async with message.bot.http_session.get(f'https://2fa.fb.rip/api/otp/{key}') as raw_response:
+        async with message.bot.http_session.get(f'https://2fa.fb.rip/api/otp/{key}', ssl=False) as raw_response:
             response = await raw_response.json()
 
         if response['ok']:
