@@ -12,9 +12,12 @@ usersMY.sqlite
 companies.sqlite
 parse_companies.py
 parse_bs4.py
+parse_us_companies.py
 
 assets/female
 assets/male
 assets/selfieGenerator
+assets/EIN-FORM-US-1.jpg
+assets/EIN-FORM-US-2.jpg
 
 config.ini

@@ -17,6 +17,14 @@ class Company(Base):
     edrpou = Column(Text)
     registrator = Column(Text)
 
+class USCompany(Base):
+    __tablename__ = 'us_companies'
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    name = Column(Text, nullable=False)
+    address = Column(Text, nullable=False)
+    state = Column(Text, nullable=False)
+
 
 async def save_company(name, registration_date, address, edrpou, registrator):
     async with AsyncSession(engine) as session:
@@ -27,4 +35,16 @@ async def save_company(name, registration_date, address, edrpou, registrator):
 async def get_random_company():
     async with AsyncSession(engine) as session:
         company = await session.execute(sa.select(Company).order_by(func.random()).limit(1))
+        return company.scalar()
+
+
+async def save_us_company(name, address, state):
+    async with AsyncSession(engine) as session:
+        await session.execute(insert(USCompany).values(name=name, address=address, state=state))
+        await session.commit()
+
+
+async def get_random_us_company():
+    async with AsyncSession(engine) as session:
+        company = await session.execute(sa.select(USCompany).order_by(func.random()).limit(1))
         return company.scalar()

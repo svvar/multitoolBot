@@ -53,6 +53,7 @@ async def show_menu(message: types.Message, state: FSMContext):
     kb.button(text=_('🚀 Фармерам'))
     kb.button(text=_('🤳 Генератор селфі'))
     kb.button(text=_('📝 Верифікація БМ (укр.)'))
+    kb.button(text=_('📝 Верифікація TikTok (бізнес акк.)'))
     kb.adjust(2)
 
     await message.answer(_('Виберіть дію з меню:'), reply_markup=kb.as_markup(resize_keyboard=True))
