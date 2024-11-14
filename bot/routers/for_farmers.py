@@ -329,7 +329,7 @@ async def fan_page_name_gen(message: types.Message, state: FSMContext):
 
     async with gen_semaphore:
         loop = asyncio.get_event_loop()
-        names = await loop.run_in_executor(executor, fan_page.generate_fan_page_names, amount)
+        names = await loop.run_in_executor(executor, generate_fan_page_names, amount)
 
     await _send_message_and_txt(message, '\n'.join(names), 'fan_page_names.txt')
     await state.clear()
