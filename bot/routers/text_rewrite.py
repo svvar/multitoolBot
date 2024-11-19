@@ -5,7 +5,7 @@ from google.api_core.exceptions import ResourceExhausted
 from aiogram import types, Router, F
 from aiogram.fsm.context import FSMContext
 from aiogram.utils.i18n import lazy_gettext as __, gettext as _
-from aiogram.utils.keyboard import InlineKeyboardBuilder, ReplyKeyboardBuilder
+from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 from bot.core.states import TextRewrite
 from bot.core.locale_helper import languages
@@ -36,13 +36,14 @@ def _settings_kb(
         max_conversion: bool = False
 ):
     tweak_kb = InlineKeyboardBuilder()
-    tweak_kb.button(text=f"{_('🌐 Перекласти')}: {translate}", callback_data='translate')
-    tweak_kb.button(text=f"{_('🔄 Унікальних копій')}: {copies}", callback_data='copies')
-    tweak_kb.button(text=f"{_('📤 Спосіб відправки')}: {send_as}", callback_data='send_as')
+    # Pybabel doesn't support f-strings in Python pre 3.12
+    tweak_kb.button(text=_('🌐 Перекласти') + ": " + translate, callback_data='translate')
+    tweak_kb.button(text=_('🔄 Унікальних копій') + ": " + str(copies), callback_data='copies')
+    tweak_kb.button(text=_('📤 Спосіб відправки') + ": " + send_as, callback_data='send_as')
     # tweak_kb.button(text=f"{_('📄 Рівень узагальнення')}: {generalization}", callback_data='generalization')
-    tweak_kb.button(text=f"{_('🛠️ Виправлення помилок')}: {_('Так') if correct_mistakes else _('Ні')}", callback_data='correct_mistakes')
-    tweak_kb.button(text=f"{_('😀 Емоджі')}: {_('Так') if emoji else _('Ні')}", callback_data='emoji')
-    tweak_kb.button(text=f"{_('📈 Змінити для максимізації конверсії')}: {_('Так') if max_conversion else _('Ні')}", callback_data='max_conversion')
+    tweak_kb.button(text=_('🛠️ Виправлення помилок') + ": " + (_('Так') if correct_mistakes else _('Ні')), callback_data='correct_mistakes')
+    tweak_kb.button(text=_('😀 Емоджі') + ": " + (_('Так') if emoji else _('Ні')), callback_data='emoji')
+    tweak_kb.button(text=_('📈 Змінити для максимізації конверсії') + ": " + (_('Так') if max_conversion else _('Ні')), callback_data='max_conversion')
     tweak_kb.button(text=_('Перефразувати'), callback_data='run')
     tweak_kb.adjust(1)
 

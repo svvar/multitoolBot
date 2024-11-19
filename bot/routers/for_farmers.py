@@ -43,13 +43,14 @@ def _password_keyboard(
         n_passwords: int = 10
 ):
     tweak_kb = InlineKeyboardBuilder()
-    tweak_kb.button(text=f"{_('📏 Кількість символів')}: {n_chars}", callback_data='n_chars')
-    tweak_kb.button(text=f"{_('⭐ Спеціальні символи')}: {'🟢' if special_chars else '🔴'}", callback_data='special_chars')
-    tweak_kb.button(text=f"{_('🔤 Малі літери')}: {'🟢' if letters else '🔴'}", callback_data='letters')
-    tweak_kb.button(text=f"{_('🔠 Великі літери')}: {'🟢' if uppercase else '🔴'}", callback_data='uppercase')
-    tweak_kb.button(text=f"{_('📤 Спосіб відправки')}: {send_as}", callback_data='send_as')
-    tweak_kb.button(text=f"{_('🔑 Кількість паролів')}: {n_passwords}", callback_data='n_passwords')
-    tweak_kb.button(text=f"{_('⚙️ Згенерувати')}", callback_data='generate_passwords')
+    # Pybabel doesn't support f-strings in Python pre 3.12
+    tweak_kb.button(text=_('📏 Кількість символів') + ": " + str(n_chars), callback_data='n_chars')
+    tweak_kb.button(text=_('⭐ Спеціальні символи') + ": " + ('🟢' if special_chars else '🔴'), callback_data='special_chars')
+    tweak_kb.button(text=_('🔤 Малі літери') + ": " + ('🟢' if letters else '🔴'), callback_data='letters')
+    tweak_kb.button(text=_('🔠 Великі літери') + ": " + ('🟢' if uppercase else '🔴'), callback_data='uppercase')
+    tweak_kb.button(text=_('📤 Спосіб відправки') + ": " + send_as, callback_data='send_as')
+    tweak_kb.button(text=_('🔑 Кількість паролів') + ": " + str(n_passwords), callback_data='n_passwords')
+    tweak_kb.button(text=_('⚙️ Згенерувати'), callback_data='generate_passwords')
     tweak_kb.adjust(1)
 
     return tweak_kb
