@@ -5,6 +5,7 @@ from concurrent.futures import ThreadPoolExecutor
 from aiogram import types, Router, F
 from aiogram.fsm.context import FSMContext
 from aiogram.utils.i18n import gettext as _, lazy_gettext as __
+from aiogram.utils.keyboard import ReplyKeyboardBuilder
 
 from bot.core.states import TikTokDownload
 from bot.functions import downloader
@@ -15,7 +16,9 @@ tiktok_semaphore = asyncio.Semaphore(2)
 
 @tiktok_router.message(F.text == __('📹 Завантажити відео з TikTok'))
 async def tiktok_download_start(message: types.Message, state: FSMContext):
-    await message.answer(_('Відправте посилання на відео з TikTok'))
+    back_kb = ReplyKeyboardBuilder()
+    back_kb.button(text=_('🏠 В меню'))
+    await message.answer(_('Відправте посилання на відео з TikTok'), reply_markup=back_kb.as_markup(resize_keyboard=True))
     await state.set_state(TikTokDownload.url_input)
 
 

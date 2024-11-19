@@ -44,7 +44,7 @@ async def dump_users(message: types.Message):
         return
 
     buffer = io.BytesIO()
-    buffer.name = f'bot_users_{datetime.datetime.now().strftime("%m.%d.%Y")}.xlsx'
+    buffer.name = f'bot_users_{datetime.now().strftime("%m.%d.%Y")}.xlsx'
 
     workbook = xlsxwriter.Workbook(buffer)
     worksheet = workbook.add_worksheet()
@@ -148,19 +148,6 @@ async def mailing_asking_links(message: types.Message, state: FSMContext):
 
     await state.set_state(AdminMailing.asking_links)
 
-
-@admin_router.message(AdminMailing.asking_links)
-async def mailing_links(message: types.Message, state: FSMContext):
-    if message.text:
-        try:
-            buttons_result = convert_to_buttons(message.text)
-            await state.update_data(buttons=buttons_result)
-            await state.set_state(AdminMailing.preview)
-            await mailing_preview(message, state)
-        except Exception as e:
-            await message.answer(_('Неправильний формат вводу посилань, посилання не додані') + '\n\n' + str(e))
-
-
 @admin_router.message(AdminMailing.asking_links, F.text == __('Не додавати посилання'))
 async def mailing_preview(message: types.Message, state: FSMContext):
     data = await state.get_data()
@@ -185,6 +172,18 @@ async def mailing_preview(message: types.Message, state: FSMContext):
 
     await message.answer(_('⬆️Попередній перегляд повідомлення⬆️\n\nЗапустити розсилку?'), reply_markup=ask_mailing_kb.as_markup(resize_keyboard=True))
     await state.set_state(AdminMailing.process)
+
+
+@admin_router.message(AdminMailing.asking_links)
+async def mailing_links(message: types.Message, state: FSMContext):
+    if message.text:
+        try:
+            buttons_result = convert_to_buttons(message.text)
+            await state.update_data(buttons=buttons_result)
+            await state.set_state(AdminMailing.preview)
+            await mailing_preview(message, state)
+        except Exception as e:
+            await message.answer(_('Неправильний формат вводу посилань, посилання не додані') + '\n\n' + str(e))
 
 
 @admin_router.message(AdminMailing.process, F.text == __('Запустити розсилку'))

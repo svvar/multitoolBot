@@ -2,6 +2,7 @@
 from aiogram import types, Router, filters, F
 from aiogram.utils.keyboard import ReplyKeyboardBuilder, InlineKeyboardBuilder
 from aiogram.utils.i18n import gettext as _, lazy_gettext as __
+from aiogram.utils.i18n.context import get_i18n
 from aiogram.fsm.context import FSMContext
 
 from bot.core.states import Setup
@@ -38,6 +39,9 @@ async def set_lang(message: types.Message, state: FSMContext):
         await message.answer('Неправильно вказана мова, спробуйте ще раз\nНеправильно указан язык, попробуйте еще раз')
         return
     await storage.set_lang(message.from_user.id, lang)
+
+    i18n = get_i18n()
+    i18n.ctx_locale.set(lang)
     await show_menu(message, state)
 
 
@@ -54,6 +58,7 @@ async def show_menu(message: types.Message, state: FSMContext):
     kb.button(text=_('🤳 Генератор селфі'))
     kb.button(text=_('📝 Верифікація БМ (укр.)'))
     kb.button(text=_('📝 Верифікація TikTok (бізнес акк.)'))
+    kb.button(text=_('✍️ Перефразувати текст'))
     kb.adjust(2)
 
     await message.answer(_('Виберіть дію з меню:'), reply_markup=kb.as_markup(resize_keyboard=True))

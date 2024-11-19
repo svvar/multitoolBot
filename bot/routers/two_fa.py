@@ -1,7 +1,7 @@
 import asyncio
 
 from aiogram import types, Router, F
-from aiogram.utils.keyboard import InlineKeyboardBuilder
+from aiogram.utils.keyboard import InlineKeyboardBuilder, ReplyKeyboardBuilder
 from aiogram.fsm.context import FSMContext
 from aiogram.utils.i18n import gettext as _, lazy_gettext as __
 
@@ -26,7 +26,10 @@ async def start_2fa(message: types.Message, state: FSMContext):
         await state.set_data({'select_key_msg': msg.message_id})
         await state.set_state(TwoFA.key_input_callback)
     else:
-        await message.answer(_('Введіть ключ для 2fa:'))
+        back_kb = ReplyKeyboardBuilder()
+        back_kb.button(text=_('🏠 В меню'))
+
+        await message.answer(_('Введіть ключ для 2fa:'), reply_markup=back_kb.as_markup(resize_keyboard=True))
         await state.set_state(TwoFA.key_input_msg)
 
 

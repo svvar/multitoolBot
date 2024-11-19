@@ -83,3 +83,11 @@ class AllFanPageGen(StatesGroup):
 class SelfieGen(StatesGroup):
     selecting_gender = State()
     selecting_age = State()
+
+
+class TextRewrite(StatesGroup):
+    entering_text = State()
+    inline_menu = State()
+    selecting_lang = State()
+    entering_copies = State()
+    entering_generalization = State()

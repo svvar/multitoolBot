@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2024-11-06 17:59+0200\n"
+"POT-Creation-Date: 2024-11-19 11:29+0200\n"
 "PO-Revision-Date: 2024-10-28 18:21+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: uk\n"
@@ -25,7 +25,8 @@ msgstr ""
 #: bot/routers/id_generator.py:101 bot/routers/id_generator.py:108
 #: bot/routers/id_generator.py:127 bot/routers/id_generator.py:142
 #: bot/routers/id_generator.py:163 bot/routers/selfie_generator.py:23
-#: bot/routers/selfie_generator.py:44 bot/routers/unique_media.py:22
+#: bot/routers/selfie_generator.py:44 bot/routers/tiktok_download.py:20
+#: bot/routers/two_fa.py:30 bot/routers/unique_media.py:22
 msgid "🏠 В меню"
 msgstr "🏠 В меню"
 
@@ -37,7 +38,7 @@ msgstr "✅️ Перевірити FB акаунти на блокування"
 msgid "🔒 2fa код"
 msgstr "🔒 2fa код"
 
-#: bot/main_menu.py:49 bot/routers/tiktok_download.py:16
+#: bot/main_menu.py:49 bot/routers/tiktok_download.py:17
 msgid "📹 Завантажити відео з TikTok"
 msgstr "📹 Завантажити відео з TikTok"
 
@@ -69,7 +70,11 @@ msgstr "📝 Верифікація БМ (укр.)"
 msgid "📝 Верифікація TikTok (бізнес акк.)"
 msgstr "📝 Верифікація TikTok (бізнес акк.)"
 
-#: bot/main_menu.py:59 bot/routers/for_farmers.py:35
+#: bot/main_menu.py:57 bot/routers/text_rewrite.py:23
+msgid "✍️ Перефразувати текст"
+msgstr "✍️ Перефразувати текст"
+
+#: bot/main_menu.py:60 bot/routers/for_farmers.py:35
 msgid "Виберіть дію з меню:"
 msgstr "Виберіть дію з меню:"
 
@@ -266,12 +271,14 @@ msgstr "👨 Генератор імен"
 msgid "⚡️ Генератор fan-page"
 msgstr "⚡️ Генератор fan-page"
 
-#: bot/routers/for_farmers.py:70
+#: bot/routers/for_farmers.py:70 bot/routers/text_rewrite.py:69
+#: bot/routers/text_rewrite.py:81
 msgid "Налаштуйте кнопками нижче"
 msgstr "Налаштуйте кнопками нижче"
 
 #: bot/routers/for_farmers.py:109 bot/routers/for_farmers.py:122
 #: bot/routers/for_farmers.py:149 bot/routers/for_farmers.py:155
+#: bot/routers/text_rewrite.py:119
 msgid "Введіть значення від {} до {}:"
 msgstr "Введіть значення від {} до {}:"
 
@@ -507,19 +514,51 @@ msgstr ""
 msgid "🔄 Ще одне селфі"
 msgstr "🔄 Ще одне селфі"
 
-#: bot/routers/tiktok_download.py:18
+#: bot/routers/text_rewrite.py:25
+msgid "Відправте текст, який потрібно перефразувати."
+msgstr "Відправте текст, який потрібно перефразувати."
+
+#: bot/routers/text_rewrite.py:46
+msgid "Перефразувати"
+msgstr "Перефразувати"
+
+#: bot/routers/text_rewrite.py:54
+msgid "❌ Не перекладати"
+msgstr "❌ Не перекладати"
+
+#: bot/routers/text_rewrite.py:114
+msgid "Оберіть мову перекладу:"
+msgstr "Оберіть мову перекладу:"
+
+#: bot/routers/text_rewrite.py:138
+msgid "Зачекайте, текст обробляється..."
+msgstr "Зачекайте, текст обробляється..."
+
+#: bot/routers/text_rewrite.py:163
+msgid "Введіть число!"
+msgstr "Введіть число!"
+
+#: bot/routers/text_rewrite.py:171
+msgid "Введіть число від {} до {}:"
+msgstr "Введіть число від {} до {}:"
+
+#: bot/routers/text_rewrite.py:245
+msgid "Забагато запитів від користувачів, спробуйте за хвилину"
+msgstr "Забагато запитів від користувачів, спробуйте за хвилину"
+
+#: bot/routers/tiktok_download.py:21
 msgid "Відправте посилання на відео з TikTok"
 msgstr "Відправте посилання на відео з TikTok"
 
-#: bot/routers/tiktok_download.py:26
+#: bot/routers/tiktok_download.py:29
 msgid "Непідохдяще посилання, спробуйте ще раз"
 msgstr "Непідохдяще посилання, спробуйте ще раз"
 
-#: bot/routers/tiktok_download.py:33
+#: bot/routers/tiktok_download.py:36
 msgid "Зачекайте, відео завантажується..."
 msgstr "Зачекайте, відео завантажується..."
 
-#: bot/routers/tiktok_download.py:46
+#: bot/routers/tiktok_download.py:49
 msgid "Відео не знайдено"
 msgstr "Відео не знайдено"
 
@@ -527,15 +566,15 @@ msgstr "Відео не знайдено"
 msgid "Введіть ключ для 2fa або виберіть з нещодавніх:"
 msgstr "Введіть ключ для 2fa або виберіть з нещодавніх:"
 
-#: bot/routers/two_fa.py:29
+#: bot/routers/two_fa.py:32
 msgid "Введіть ключ для 2fa:"
 msgstr "Введіть ключ для 2fa:"
 
-#: bot/routers/two_fa.py:52 bot/routers/two_fa.py:80
+#: bot/routers/two_fa.py:55 bot/routers/two_fa.py:83
 msgid "Неправильний ключ"
 msgstr "Неправильний ключ"
 
-#: bot/routers/two_fa.py:70 bot/routers/two_fa.py:74
+#: bot/routers/two_fa.py:73 bot/routers/two_fa.py:77
 msgid ""
 "Ваш код: `{}` \n"
 "Термін дії: {} секунд"

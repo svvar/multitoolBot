@@ -14,3 +14,4 @@ PROXY_USERNAME = _config['proxy']['username']
 PROXY_PASSWORD = _config['proxy']['password']
 PROXY_ROTATE = _config['proxy']['change_link']
 
+AI_API_TOKEN = _config['gemini']['API_TOKEN']

@@ -8,7 +8,7 @@ from aiogram.utils.i18n import I18n
 from bot.core.config import TOKEN
 from bot.core.middlewares import DatabaseI18nMiddleware
 from bot.routers import (acc_check, two_fa, tiktok_download, id_generator, unique_media,
-                         selfie_generator, play_apps, admin, for_farmers, doc_verification)
+                         selfie_generator, play_apps, admin, for_farmers, doc_verification, text_rewrite)
 from bot import main_menu
 from bot.routers.play_apps import check_apps_task
 
@@ -39,6 +39,7 @@ async def main():
     dp.include_router(admin.admin_router)
     dp.include_router(for_farmers.farmers_router)
     dp.include_router(doc_verification.doc_verification_router)
+    dp.include_router(text_rewrite.rewrite_router)
 
     http_session = aiohttp.ClientSession()
 
