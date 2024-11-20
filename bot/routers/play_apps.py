@@ -4,7 +4,7 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from aiogram import types, Router, F
 from aiogram.fsm.context import FSMContext
 from aiogram.utils.i18n import gettext as _, lazy_gettext as __
-from aiogram.utils.keyboard import InlineKeyboardBuilder
+from aiogram.utils.keyboard import InlineKeyboardBuilder, ReplyKeyboardBuilder
 
 from bot.core.states import Apps
 from bot.core.callbacks import EditAppsMenuCallback
@@ -63,9 +63,15 @@ async def apps_menu(message: types.Message, state: FSMContext):
 async def add_app_request(callback: types.CallbackQuery, state: FSMContext):
     await callback.answer()
 
-    await callback.bot.edit_message_text(chat_id=callback.message.chat.id,
-                                        message_id=callback.message.message_id,
-                                        text=_('Введіть посилання на додаток в Google Play'))
+    # await callback.bot.edit_message_text(chat_id=callback.message.chat.id,
+    #                                     message_id=callback.message.message_id,
+    #                                     text=_('Введіть посилання на додаток в Google Play'))
+
+    back_kb = ReplyKeyboardBuilder()
+    back_kb.button(text=_('🏠 В меню'))
+
+    await callback.message.delete()
+    await callback.message.answer(_('Введіть посилання на додаток в Google Play'), reply_markup=back_kb.as_markup(resize_keyboard=True))
 
     await state.set_state(Apps.entering_url)
 
@@ -77,12 +83,13 @@ async def add_app(message: types.Message, state: FSMContext):
     url = message.text
     if 'play.google.com/store' not in url:
         await message.answer(_('Непідохдяще посилання, введіть посилання на додаток в Google Play'))
-        await state.clear()
+        return
 
     app_name = await market_apps.get_app_name(http_session, url)
     url_app_id = market_apps.extract_id(url)
     url = f'https://play.google.com/store/apps/details?id={url_app_id}'
 
+    # TODO maybe following scenarios should be handled differently
     if not app_name:
         await message.answer(_('Ви намагаєтесь додати вже заблокований додаток або такого не існувало'))
         await state.clear()

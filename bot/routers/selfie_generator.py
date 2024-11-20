@@ -71,7 +71,7 @@ async def selfie_gen_state(message: types.Message, state: FSMContext):
     kb.button(text=_('🔄 Ще одне селфі'), callback_data=f'selfie_{sex}_{age}')
 
     await message.answer_photo(input_file, reply_markup=kb.as_markup())
-    await state.clear()
+    # await state.clear()
 
 
 @selfie_gen_router.callback_query(F.data.startswith('selfie'))

@@ -26,6 +26,16 @@ async def start_msg(message: types.Message, state: FSMContext):
     await state.set_state(Setup.choosing_lang)
 
 
+@main_menu_router.message(filters.command.Command('lang'))
+@main_menu_router.message(F.text == __('💬 Змінити мову'))
+async def change_lang(message: types.Message, state: FSMContext):
+    await message.answer("Виберіть мову / Выберите язык / Select language:",
+                         reply_markup=ReplyKeyboardBuilder()
+                         .button(text='🇺🇦 Українська').button(text='🇷🇺 Русский').button(text='🇺🇸 English').as_markup(resize_keyboard=True))
+
+    await state.set_state(Setup.choosing_lang)
+
+
 @main_menu_router.message(Setup.choosing_lang)
 async def set_lang(message: types.Message, state: FSMContext):
     lang = message.text
@@ -59,6 +69,7 @@ async def show_menu(message: types.Message, state: FSMContext):
     kb.button(text=_('📝 Верифікація БМ (укр.)'))
     kb.button(text=_('📝 Верифікація TikTok (бізнес акк.)'))
     kb.button(text=_('✍️ Перефразувати текст'))
+    kb.button(text=_('💬 Змінити мову'))
     kb.adjust(2)
 
     await message.answer(_('Виберіть дію з меню:'), reply_markup=kb.as_markup(resize_keyboard=True))

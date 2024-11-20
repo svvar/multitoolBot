@@ -1,5 +1,5 @@
 
-from sqlalchemy import Column, Integer, Text, DateTime, func, create_engine, or_, and_
+from sqlalchemy import Column, Integer, Text, DateTime, func
 from sqlalchemy.orm import declarative_base
 import sqlalchemy as sa
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
@@ -76,13 +76,9 @@ async def get_all_user_ids():
 
 async def get_user_ids_by_lang(bot_lang):
     async with AsyncSession(engine) as session:
-        # users = await session.execute(sa.select(Users.tg_id).where(Users.bot_language == bot_lang))
         users = await session.execute(sa.select(Users.tg_id).where(
-            or_(
-                Users.bot_language == bot_lang,
-                and_(Users.bot_language == None, Users.tg_language == bot_lang)
-            )
-        ))
+            func.coalesce(Users.bot_language, Users.tg_language) == bot_lang)       # noqa
+        )
         return users.scalars().all()
 
 

@@ -142,7 +142,7 @@ async def mailing_asking_links(message: types.Message, state: FSMContext):
     kb.button(text=_('🔙 Назад'))
     kb.adjust(1)
 
-    await message.answer('Введіть список inline-посилань (макс. 3): \n\nФормат:\n*Назва кнопки* *Посилання*\n*Назва кнопки2* *Посилання2*',
+    await message.answer('Введіть список inline-посилань (макс. 3): \n\nФормат:\n*Назва кнопки* *https://link133.com*\n*Назва кнопки2* *https://link233.com*',
                          reply_markup=kb.as_markup(resize_keyboard=True),
                          parse_mode='markdown')
 

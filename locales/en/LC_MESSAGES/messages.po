@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2024-11-19 14:10+0200\n"
+"POT-Creation-Date: 2024-11-20 12:41+0200\n"
 "PO-Revision-Date: 2024-10-28 18:20+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -14,62 +14,67 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.13.1\n"
 
-#: bot/main_menu.py:48 bot/routers/acc_check.py:21 bot/routers/admin.py:34
+#: bot/main_menu.py:30 bot/main_menu.py:72
+msgid "💬 Змінити мову"
+msgstr "💬 Change language"
+
+#: bot/main_menu.py:58 bot/routers/acc_check.py:21 bot/routers/admin.py:34
 #: bot/routers/for_farmers.py:32 bot/routers/id_generator.py:25
 #: bot/routers/id_generator.py:45 bot/routers/id_generator.py:80
 #: bot/routers/id_generator.py:101 bot/routers/id_generator.py:108
 #: bot/routers/id_generator.py:127 bot/routers/id_generator.py:142
-#: bot/routers/id_generator.py:163 bot/routers/selfie_generator.py:23
-#: bot/routers/selfie_generator.py:44 bot/routers/tiktok_download.py:20
-#: bot/routers/two_fa.py:30 bot/routers/unique_media.py:22
+#: bot/routers/id_generator.py:163 bot/routers/play_apps.py:71
+#: bot/routers/selfie_generator.py:23 bot/routers/selfie_generator.py:44
+#: bot/routers/tiktok_download.py:20 bot/routers/two_fa.py:30
+#: bot/routers/unique_media.py:22
 msgid "🏠 В меню"
 msgstr "🏠 To menu"
 
-#: bot/main_menu.py:51 bot/routers/acc_check.py:17
+#: bot/main_menu.py:61 bot/routers/acc_check.py:17
 msgid "✅️ Перевірити FB акаунти на блокування"
 msgstr "✅️ Check FB accounts for bans"
 
-#: bot/main_menu.py:52 bot/routers/two_fa.py:16
+#: bot/main_menu.py:62 bot/routers/two_fa.py:16
 msgid "🔒 2fa код"
 msgstr "🔒 2fa code"
 
-#: bot/main_menu.py:53 bot/routers/tiktok_download.py:17
+#: bot/main_menu.py:63 bot/routers/tiktok_download.py:17
 msgid "📹 Завантажити відео з TikTok"
 msgstr "📹 Download video from TikTok"
 
-#: bot/main_menu.py:54 bot/routers/play_apps.py:19
+#: bot/main_menu.py:64 bot/routers/play_apps.py:19
 msgid "📱 Додатки Google Play"
 msgstr "📱 Google Play apps"
 
-#: bot/main_menu.py:55 bot/routers/id_generator.py:20
+#: bot/main_menu.py:65 bot/routers/id_generator.py:20
 msgid "🆔 Генератор ID"
 msgstr "🆔 ID generator"
 
-#: bot/main_menu.py:56 bot/routers/unique_media.py:19
+#: bot/main_menu.py:66 bot/routers/unique_media.py:19
 msgid "🕶️ Унікалізувати фото чи відео"
 msgstr "🕶️ Uniquilize photo or video"
 
-#: bot/main_menu.py:57 bot/routers/for_farmers.py:25
+#: bot/main_menu.py:67 bot/routers/for_farmers.py:25
 msgid "🚀 Фармерам"
 msgstr "🚀 For farmers"
 
-#: bot/main_menu.py:58 bot/routers/selfie_generator.py:17
+#: bot/main_menu.py:68 bot/routers/selfie_generator.py:17
 msgid "🤳 Генератор селфі"
 msgstr "🤳 Selfie generator"
 
-#: bot/main_menu.py:59 bot/routers/doc_verification.py:19
+#: bot/main_menu.py:69 bot/routers/doc_verification.py:19
 msgid "📝 Верифікація БМ (укр.)"
 msgstr "📝 BM verification (ukr.)"
 
-#: bot/main_menu.py:60 bot/routers/doc_verification.py:41
+#: bot/main_menu.py:70 bot/routers/doc_verification.py:41
 msgid "📝 Верифікація TikTok (бізнес акк.)"
 msgstr "📝 TikTok verification (business acc.)"
 
-#: bot/main_menu.py:61 bot/routers/text_rewrite.py:23
+#: bot/main_menu.py:71 bot/routers/text_rewrite.py:23
 msgid "✍️ Перефразувати текст"
 msgstr "✍️ Rewrite text"
 
-#: bot/main_menu.py:64 bot/routers/for_farmers.py:35
+#: bot/main_menu.py:75 bot/routers/for_farmers.py:35
 msgid "Виберіть дію з меню:"
 msgstr "Choose an action from the menu:"
 
@@ -485,31 +490,31 @@ msgstr "Delete app"
 msgid "У вас немає додатків для сповіщення про блокування в Google Play"
 msgstr "You have no apps for Google Play block notifications"
 
-#: bot/routers/play_apps.py:68
+#: bot/routers/play_apps.py:74
 msgid "Введіть посилання на додаток в Google Play"
 msgstr "Enter a link to the app in Google Play"
 
-#: bot/routers/play_apps.py:81
+#: bot/routers/play_apps.py:85
 msgid "Непідохдяще посилання, введіть посилання на додаток в Google Play"
 msgstr "Invalid link, enter a link to the app in Google Play"
 
-#: bot/routers/play_apps.py:89
+#: bot/routers/play_apps.py:94
 msgid "Ви намагаєтесь додати вже заблокований додаток або такого не існувало"
 msgstr "You are trying to add an already blocked app or there is no such app"
 
-#: bot/routers/play_apps.py:95
+#: bot/routers/play_apps.py:100
 msgid "Додаток вже додано"
 msgstr "The app has already been added"
 
-#: bot/routers/play_apps.py:101
+#: bot/routers/play_apps.py:106
 msgid "Додаток *{}* успішно додано"
 msgstr "App *{}* added successfully"
 
-#: bot/routers/play_apps.py:117
+#: bot/routers/play_apps.py:122
 msgid "Виберіть додаток для видалення:"
 msgstr "Select an app to delete:"
 
-#: bot/routers/play_apps.py:130
+#: bot/routers/play_apps.py:135
 msgid "Додаток *{}* видалено"
 msgstr "App *{}* deleted"
 
