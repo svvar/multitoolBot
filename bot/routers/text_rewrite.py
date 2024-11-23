@@ -7,6 +7,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.utils.i18n import lazy_gettext as __, gettext as _
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
+from bot.core.usage_statistics import usage
 from bot.core.states import TextRewrite
 from bot.core.locale_helper import languages
 from bot.core.storage import main_storage as storage
@@ -260,4 +261,4 @@ async def run_with_ai(message: types.Message, state: FSMContext):
             input_file = types.input_file.BufferedInputFile(file.getvalue(), filename=file.name)
             await message.answer_document(input_file)
 
-
+    usage.text_rewrite += 1

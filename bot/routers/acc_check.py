@@ -8,8 +8,10 @@ from aiogram.fsm.context import FSMContext
 from aiogram.methods import SendMediaGroup
 
 from bot.core.states import CheckingAccounts
+from bot.core.usage_statistics import usage
 from bot.main_menu import show_menu
 from bot.functions import account_checking
+
 
 acc_check_router = Router()
 
@@ -66,6 +68,7 @@ async def check_links(message: types.Message, state: FSMContext):
         await message.bot(SendMediaGroup(chat_id=message.chat.id, media=message_files))
     await state.clear()
     await show_menu(message, state)
+    usage.fb_acc_check += 1
 
 
 @acc_check_router.message(CheckingAccounts.start_checking)

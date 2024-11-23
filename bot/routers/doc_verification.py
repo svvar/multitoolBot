@@ -7,6 +7,7 @@ from faker import Faker
 from aiogram import types, Router, F
 from aiogram.utils.i18n import lazy_gettext as __, gettext as _
 
+from bot.core.usage_statistics import usage
 from bot.core.storage.company_storage import get_random_company, get_random_us_company
 from bot.functions import docgen_writer
 
@@ -36,6 +37,8 @@ async def bm_verification(message: types.Message):
     caption = f'{company.name}\n{company.address}'
 
     await message.answer_document(input_doc, caption=caption)
+    # usage['fb_business_verification'] += 1
+    usage.fb_business_verification += 1
 
 
 @doc_verification_router.message(F.text == __('📝 Верифікація TikTok (бізнес акк.)'))
@@ -66,7 +69,7 @@ async def tiktok_verification(message: types.Message):
 
     await message.answer_document(input_doc1, caption=caption)
     await message.answer_document(input_doc2)
+    # usage['tiktok_verification'] +=
+    usage.tiktok_verification += 1
 
-
-
-
+    # print(usage)

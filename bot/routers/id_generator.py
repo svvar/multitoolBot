@@ -10,6 +10,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.utils.i18n import gettext as _, lazy_gettext as __
 from aiogram.utils.keyboard import ReplyKeyboardBuilder
 
+from bot.core.usage_statistics import usage
 from bot.core.states import IdGenerator
 from bot.functions import id_generator
 
@@ -149,6 +150,7 @@ async def id_gen_final(message: types.Message, state: FSMContext):
     age = message.text
     try:
         age = datetime.strptime(age, '%d.%m.%Y')
+        usage.id_generator += 1
         await state.update_data({'day': age.day, 'month': age.month, 'year': age.year})
         await state.set_state(IdGenerator.generating)
         await id_generate(message, state)
@@ -162,6 +164,8 @@ async def id_generate(message: types.Message, state: FSMContext):
     kb = ReplyKeyboardBuilder()
     kb.button(text=_('🏠 В меню'))
 
+    # Enable here if you want to add each generation to usage statistics
+    # usage['id_generator'] += 1
     await message.answer(_('⏳ Зачекайте, генерується фото...'), reply_markup=kb.as_markup(resize_keyboard=True))
     stored_data = await state.get_data()
     account = id_generator.Account(stored_data['name'], stored_data['surname'], stored_data['day'], stored_data['month'], stored_data['year'])

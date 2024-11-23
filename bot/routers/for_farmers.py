@@ -10,6 +10,7 @@ from aiogram.utils.keyboard import ReplyKeyboardBuilder, InlineKeyboardBuilder
 
 from concurrent.futures import ThreadPoolExecutor
 
+from bot.core.usage_statistics import usage
 from bot.core.locale_helper import locales, countries
 from bot.core.states import PasswordGen, NameGen, FanPageName, AddressGen, PhoneGen, QuoteGen, AllFanPageGen
 from bot.core.callbacks import CountryPageCallback
@@ -190,6 +191,7 @@ async def generate_passwords(callback: types.CallbackQuery, state: FSMContext):
         await callback.message.answer_document(input_file)
 
     await state.clear()
+    usage.password_generator += 1
     await farmers_menu(callback.message)
 
 
@@ -296,6 +298,7 @@ async def generate_names(callback: types.CallbackQuery, state: FSMContext):
 
     await callback.message.answer(''.join(names), parse_mode='Markdown')
     await state.clear()
+    usage.name_generator += 1
     await farmers_menu(callback.message)
 
 
@@ -334,6 +337,7 @@ async def fan_page_name_gen(message: types.Message, state: FSMContext):
 
     await _send_message_and_txt(message, '\n'.join(names), 'fan_page_names.txt')
     await state.clear()
+    usage.fan_page_name_generator += 1
 
 
 async def fan_page_sel_locale(message: types.Message, state: FSMContext):
@@ -392,6 +396,8 @@ async def fan_page_address_gen(message: types.Message, state: FSMContext):
         finally:
             await state.clear()
 
+    usage.fan_page_address_generator += 1
+
 
 @farmers_router.message(F.text == __('📞 Телефон'))
 async def fan_page_phone(message: types.Message, state: FSMContext):
@@ -434,6 +440,7 @@ async def phone_gen(message: types.Message, state: FSMContext):
 
     await _send_message_and_txt(message, '\n'.join(phones), f'{locale} phones.txt')
     await state.clear()
+    usage.fan_page_phone_generator += 1
 
 
 @farmers_router.message(F.text == __('💬 Цитата'))
@@ -476,6 +483,7 @@ async def quotes_gen(message: types.Message, state: FSMContext):
 
     await _send_message_and_txt(message, '\n'.join(quotes), f'{locale} quotes.txt')
     await state.clear()
+    usage.fan_page_quote_generator += 1
 
 
 @farmers_router.message(F.text == __('🌐 Все разом'))
@@ -532,6 +540,7 @@ async def fan_page_all_gen(message: types.Message, state: FSMContext):
 
     await _send_message_and_txt(message, text, 'fan_page_all.txt')
     await state.clear()
+    usage.fan_page_all_generator += 1
 
 
 async def _send_message_and_txt(message: types.Message, text: str, filename: str):

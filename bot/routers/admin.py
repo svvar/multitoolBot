@@ -13,6 +13,7 @@ from bot.core.states import AdminMailing, AdminWelcome
 from bot.core.config import ADMINS
 from bot.core.storage.main_storage import (get_users_dump, count_users, count_users_by_code, get_lang_codes, get_all_user_ids,
                               get_user_ids_by_lang, set_start_msg)
+from bot.core.storage.usage_stats_storage import get_usage_stats
 
 
 admin_router = Router()
@@ -28,6 +29,7 @@ async def enter_admin_panel(message: types.Message, state: FSMContext):
 
     admin_kb = ReplyKeyboardBuilder()
     admin_kb.button(text=_('Статистика користувачів'))
+    admin_kb.button(text=_('Статистика використання'))
     admin_kb.button(text=_('Вигрузити користувачів'))
     admin_kb.button(text=_('Налаштувати розсилку'))
     admin_kb.button(text=_('Налаштувати вітальне повідомлення'))
@@ -96,6 +98,34 @@ async def show_statistics(message: types.Message):
 
     await message.answer(text)
 
+
+@admin_router.message(F.text == __('Статистика використання'))
+async def show_usage_statistics(message: types.Message):
+    if message.from_user.id not in ADMINS:
+        await message.answer(_('Ви не маєте доступу до цієї команди'))
+        return
+
+    stats = await get_usage_stats()
+    template_string = _('Використання функцій бота:\n\n'
+                        'Перевірка акаунтів FB:   *{}*\n'
+                        '2fa код:   *{}*\n'
+                        'Завантаження відео з TikTok:   *{}*\n'
+                        'Перевірка додатків Google Play:   *{}*\n'
+                        'Генератор ID:   *{}*\n'
+                        'Унікалізація фото/відео:   *{}*\n'
+                        'Генератор селфі:   *{}*\n'
+                        'Верифікація БМ фейсбук:   *{}*\n'
+                        'Верифікація tiktok:   *{}*\n'
+                        'Перефразування тексту:   *{}*\n'
+                        'Генератор паролів:   *{}*\n'
+                        'Генератор імен:   *{}*\n'
+                        'Генератор назв fanpage:   *{}*\n'
+                        'Генератор адрес fanpage:   *{}*\n'
+                        'Генератор телефонів fanpage:   *{}*\n'
+                        'Генератор цитат fanpage:   *{}*\n'
+                        'Генератор повних fanpage:   *{}*')
+
+    await message.answer(template_string.format(*[stat.usage_count for stat in stats]), parse_mode='markdown')
 
 @admin_router.message(F.text == __('Налаштувати розсилку'))
 async def mailing_start(message: types.Message, state: FSMContext):

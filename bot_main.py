@@ -11,6 +11,10 @@ from bot.routers import (acc_check, two_fa, tiktok_download, id_generator, uniqu
                          selfie_generator, play_apps, admin, for_farmers, doc_verification, text_rewrite)
 from bot import main_menu
 from bot.routers.play_apps import check_apps_task
+from bot.core.usage_statistics import dump_statistics_task, dump_statistics
+
+bot = Bot(token=TOKEN)
+dp = Dispatcher()
 
 
 async def start_polling(bot, dp):
@@ -21,9 +25,6 @@ async def start_polling(bot, dp):
 async def main():
     if not os.path.exists('downloads'):
         os.mkdir('downloads')
-
-    bot = Bot(token=TOKEN)
-    dp = Dispatcher()
 
     i18n = I18n(path='locales', default_locale='ru', domain='messages')
     dp.update.middleware(DatabaseI18nMiddleware(i18n))
@@ -46,7 +47,14 @@ async def main():
     bot.http_session = http_session
 
     await check_apps_task(bot)
+    await dump_statistics_task()
     await start_polling(bot, dp)
+
+
+@dp.shutdown()
+async def on_shutdown(*args, **kwargs):
+    await dump_statistics()
+    await bot.http_session.close()
 
 
 if __name__ == '__main__':

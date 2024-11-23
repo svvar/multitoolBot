@@ -7,6 +7,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.utils.i18n import gettext as _, lazy_gettext as __
 from aiogram.utils.keyboard import ReplyKeyboardBuilder
 
+from bot.core.usage_statistics import usage
 from bot.core.states import TikTokDownload
 from bot.functions import downloader
 
@@ -47,3 +48,5 @@ async def tiktok_download(message: types.Message, state: FSMContext):
         os.remove(video_path)
     else:
         await message.answer(_('Відео не знайдено'))
+
+    usage.tiktok_downloader += 1

@@ -7,7 +7,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.utils.keyboard import ReplyKeyboardBuilder, InlineKeyboardBuilder
 from aiogram.utils.i18n import gettext as _, lazy_gettext as __
 
-
+from bot.core.usage_statistics import usage
 from bot.core.states import SelfieGen
 
 
@@ -71,7 +71,7 @@ async def selfie_gen_state(message: types.Message, state: FSMContext):
     kb.button(text=_('🔄 Ще одне селфі'), callback_data=f'selfie_{sex}_{age}')
 
     await message.answer_photo(input_file, reply_markup=kb.as_markup())
-    # await state.clear()
+    usage.selfie_generator += 1
 
 
 @selfie_gen_router.callback_query(F.data.startswith('selfie'))
@@ -86,6 +86,8 @@ async def selfie_gen_callback(callback: types.CallbackQuery):
 
     await callback.answer()
     await callback.message.answer_photo(input_file, reply_markup=kb.as_markup())
+
+    # usage['selfie_generator'] += 1
 
 
 def _selfie_get_file(sex, age):

@@ -47,7 +47,7 @@ def apply_all_modifications(video_task, output_video_path):
         output_video_path
     ]
 
-    process = subprocess.Popen(ffmpeg_command, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    process = subprocess.Popen(ffmpeg_command, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
     stdout, stderr = process.communicate()
     process.wait()
 

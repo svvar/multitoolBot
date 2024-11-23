@@ -8,12 +8,13 @@ from aiogram.fsm.context import FSMContext
 from aiogram.utils.i18n import gettext as _, lazy_gettext as __
 from aiogram.utils.keyboard import ReplyKeyboardBuilder
 
+from bot.core.usage_statistics import usage
 from bot.core.states import Uniquilizer
 from bot.functions import video_uniqueizer, image_uniqueizer
 
 
 unique_media_router = Router()
-uniqualization_semaphore = asyncio.Semaphore(2)
+uniqualization_semaphore = asyncio.Semaphore(1)
 
 
 @unique_media_router.message(F.text == __('🕶️ Унікалізувати фото чи відео'))
@@ -107,6 +108,7 @@ async def unique_num_copies(message: types.Message, state: FSMContext):
 
 @unique_media_router.message(Uniquilizer.generating)
 async def unique_generate(message: types.Message, state: FSMContext):
+    usage.unique_media += 1
     async with uniqualization_semaphore:
         state_data = await state.get_data()
         copies = state_data['copies']

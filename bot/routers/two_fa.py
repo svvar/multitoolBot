@@ -6,6 +6,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.utils.i18n import gettext as _, lazy_gettext as __
 
 
+from bot.core.usage_statistics import usage
 from bot.core.states import TwoFA
 from bot.core.storage import main_storage as storage
 from bot.functions import twoFA
@@ -39,6 +40,7 @@ async def get_2fa_callback(callback: types.CallbackQuery, state: FSMContext):
     await state.set_state(TwoFA.fetching_data)
     await callback.answer()
 
+    usage.two_fa += 1
     await get_2fa(key, callback.message, state)
 
 
@@ -46,11 +48,12 @@ async def get_2fa_callback(callback: types.CallbackQuery, state: FSMContext):
 @two_fa_router.message(TwoFA.key_input_callback)
 async def get_2fa_msg(message: types.Message, state: FSMContext):
     key = message.text.strip().replace(' ', '')
+    usage.two_fa += 1
     if twoFA.is_base32_encoded(key):
         await storage.add_key(message.from_user.id, key)
         await state.set_state(TwoFA.fetching_data)
-
         await get_2fa(key, message, state)
+
     else:
         await message.answer(_('Неправильний ключ'))
         await state.clear()

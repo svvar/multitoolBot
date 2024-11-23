@@ -6,6 +6,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.utils.i18n import gettext as _, lazy_gettext as __
 from aiogram.utils.keyboard import InlineKeyboardBuilder, ReplyKeyboardBuilder
 
+from bot.core.usage_statistics import usage
 from bot.core.states import Apps
 from bot.core.callbacks import EditAppsMenuCallback
 from bot.core.storage import main_storage as storage
@@ -19,6 +20,7 @@ play_apps_router = Router()
 @play_apps_router.message(F.text == __('📱 Додатки Google Play'))
 async def apps_menu(message: types.Message, state: FSMContext):
     http_session = message.bot.http_session
+    usage.play_apps_check += 1
 
     users_apps = await storage.get_user_apps(message.from_user.id)
     tasks = [market_apps.check_app(http_session, app) for app in users_apps]
