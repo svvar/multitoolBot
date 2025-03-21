@@ -8,6 +8,9 @@ class CheckingAccounts(StatesGroup):
     file_input = State()
     message_input = State()
 
+class CheckingInstAccounts(StatesGroup):
+    entering_usernames = State()
+
 class TwoFA(StatesGroup):
     key_input_msg = State()
     key_input_callback = State()
@@ -91,3 +94,7 @@ class TextRewrite(StatesGroup):
     selecting_lang = State()
     entering_copies = State()
     entering_generalization = State()
+
+class BugReport(StatesGroup):
+    describing_bug = State()
+    dev_entering_reply = State()

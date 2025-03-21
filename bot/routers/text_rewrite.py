@@ -5,7 +5,7 @@ from google.api_core.exceptions import ResourceExhausted
 from aiogram import types, Router, F
 from aiogram.fsm.context import FSMContext
 from aiogram.utils.i18n import lazy_gettext as __, gettext as _
-from aiogram.utils.keyboard import InlineKeyboardBuilder
+from aiogram.utils.keyboard import InlineKeyboardBuilder, ReplyKeyboardBuilder
 
 from bot.core.usage_statistics import usage
 from bot.core.states import TextRewrite
@@ -23,7 +23,10 @@ model = genai.GenerativeModel(safety_settings="BLOCK_NONE", model_name="gemini-1
 
 @rewrite_router.message(F.text == __('✍️ Перефразувати текст'))
 async def rewrite_text(message: types.Message, state: FSMContext):
-    await message.answer(_('Відправте текст, який потрібно перефразувати.'))
+    back_kb = ReplyKeyboardBuilder()
+    back_kb.button(text='🏠 В меню').button(text=_('🔧🐞 Повідомити про помилку')).adjust(1)
+
+    await message.answer(_('Відправте текст, який потрібно перефразувати.'), reply_markup=back_kb.as_markup(resize_keyboard=True))
     await state.set_state(TextRewrite.entering_text)
 
 

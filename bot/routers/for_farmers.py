@@ -31,7 +31,8 @@ async def farmers_menu(message: types.Message):
     menu_kb.button(text=_('👨 Генератор імен'))
     menu_kb.button(text=_('⚡️ Генератор fan-page'))
     menu_kb.button(text=_('🏠 В меню'))
-    menu_kb.adjust(3)
+    menu_kb.button(text=_('🔧🐞 Повідомити про помилку'))
+    menu_kb.adjust(3, 1, 1)
 
     await message.answer(_('Виберіть дію з меню:'), reply_markup=menu_kb.as_markup(resize_keyboard=True))
 

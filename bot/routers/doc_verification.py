@@ -6,6 +6,7 @@ from concurrent.futures import ThreadPoolExecutor
 from faker import Faker
 from aiogram import types, Router, F
 from aiogram.utils.i18n import lazy_gettext as __, gettext as _
+from aiogram.utils.keyboard import ReplyKeyboardBuilder
 
 from bot.core.usage_statistics import usage
 from bot.core.storage.company_storage import get_random_company, get_random_us_company
@@ -46,9 +47,9 @@ async def tiktok_verification(message: types.Message):
     await message.answer(_('⏳ Зачекайте, генерується фото...'))
 
     ein_prefixes = [
-        '10', '12', '60', '67',  '50', '53', '01', '02', '03', '04', '05', '06', '11', '13', '14', '16',
+        '10', '12', '60', '67', '50', '53', '01', '02', '03', '04', '05', '06', '11', '13', '14', '16',
         '21', '22', '23', '25', '34', '51', '52', '54', '55', '56', '57', '58', '59', '65', '30', '32',
-        '35', '36', '37', '38', '61', '15', '24', '40', '44', '94', '95','80', '90', '33', '39', '41',
+        '35', '36', '37', '38', '61', '15', '24', '40', '44', '94', '95', '80', '90', '33', '39', '41',
         '42', '43', '48', '62', '63', '64', '66', '68', '71', '72', '73', '74', '75', '76', '77', '82',
         '83', '84', '85', '86', '87', '88', '91', '92', '93', '98', '99', '20', '26', '27', '45', '46',
         '47', '81', '31'

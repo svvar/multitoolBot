@@ -21,6 +21,7 @@ async def selfie_start(message: types.Message, state: FSMContext):
     kb.button(text=_('🕺 Чоловіча'))
     kb.button(text=_('💃 Жіноча'))
     kb.button(text=_('🏠 В меню'))
+    kb.button(text=_('🔧🐞 Повідомити про помилку'))
     kb.adjust(1)
 
     await message.answer(_('Виберіть стать:'), reply_markup=kb.as_markup(resize_keyboard=True))
@@ -42,6 +43,7 @@ async def selfie_age(message: types.Message, state: FSMContext):
     kb.button(text=_('🧑 Середній'))
     kb.button(text=_('👴 Старший'))
     kb.button(text=_('🏠 В меню'))
+    kb.button(text=_('🔧🐞 Повідомити про помилку'))
     kb.adjust(3)
 
     await message.answer(_('Виберіть бажаний вік:\n(намагатиметься згенерувати фото з вибраним віком)'),

@@ -24,7 +24,8 @@ async def id_gen_start(message: types.Message, state: FSMContext):
     reply_kb.button(text=_('❌ Метадані не потрібні'))
     reply_kb.button(text=_('🎲 Випадкові метадані'))
     reply_kb.button(text=_('🏠 В меню'))
-    reply_kb.adjust(2)
+    reply_kb.button(text=_('🔧🐞 Повідомити про помилку'))
+    reply_kb.adjust(2, 1, 1)
 
     await message.answer(_('Чи потрібні вам метадані фото?'), reply_markup=reply_kb.as_markup(resize_keyboard=True))
     await state.set_state(IdGenerator.need_meta)
@@ -44,7 +45,8 @@ async def id_gen_photo_ask(message: types.Message, state: FSMContext):
     reply_kb = ReplyKeyboardBuilder()
     reply_kb.button(text=_('Випадкове фото'))
     reply_kb.button(text=_('🏠 В меню'))
-    reply_kb.adjust(2)
+    reply_kb.button(text=_('🔧🐞 Повідомити про помилку'))
+    reply_kb.adjust(1)
 
     await message.answer(_('Відправте фото або натисніть "Випадкове фото"'), reply_markup=reply_kb.as_markup(resize_keyboard=True))
     await state.set_state(IdGenerator.selecting_photo)
@@ -79,7 +81,8 @@ async def id_gen_color(message: types.Message, state: FSMContext):
     reply_kb.button(text=_('🎨 Кольорове'))
     reply_kb.button(text=_('⚫⚪ Чорно-біле'))
     reply_kb.button(text=_('🏠 В меню'))
-    reply_kb.adjust(2)
+    reply_kb.button(text=_('🔧🐞 Повідомити про помилку'))
+    reply_kb.adjust(2, 1, 1)
 
     await message.answer(_('Виберіть колір фото:'), reply_markup=reply_kb.as_markup(resize_keyboard=True))
     await state.set_state(IdGenerator.selecting_color)
@@ -107,7 +110,8 @@ async def id_gen_sex(message: types.Message, state: FSMContext):
         reply_kb.button(text=_('🕺 Чоловік'))
         reply_kb.button(text=_('💃 Жінка'))
         reply_kb.button(text=_('🏠 В меню'))
-        reply_kb.adjust(2)
+        reply_kb.button(text=_('🔧🐞 Повідомити про помилку'))
+        reply_kb.adjust(2, 1, 1)
 
         await message.answer(_('Виберіть стать:'), reply_markup=reply_kb.as_markup(resize_keyboard=True))
         await state.set_state(IdGenerator.selecting_sex)
@@ -125,7 +129,7 @@ async def id_gen_name(message: types.Message, state: FSMContext):
         return
 
     kb = ReplyKeyboardBuilder()
-    kb.button(text=_('🏠 В меню'))
+    kb.button(text=_('🏠 В меню')).button(text=_('🔧🐞 Повідомити про помилку')).adjust(1)
     await message.answer(_("Введіть ім'я та прізвище:"), reply_markup=kb.as_markup(resize_keyboard=True))
     await state.set_state(IdGenerator.entering_name)
 
@@ -139,9 +143,7 @@ async def id_gen_age(message: types.Message, state: FSMContext):
 
     await state.update_data({'name': name[0], 'surname': name[1]})
 
-    kb = ReplyKeyboardBuilder()
-    kb.button(text=_('🏠 В меню'))
-    await message.answer(_('Введіть дату народження (ДД.ММ.РРРР):'), reply_markup=kb.as_markup(resize_keyboard=True))
+    await message.answer(_('Введіть дату народження (ДД.ММ.РРРР):'))
     await state.set_state(IdGenerator.entering_age)
 
 
@@ -162,7 +164,7 @@ async def id_gen_final(message: types.Message, state: FSMContext):
 @id_generator_router.message(IdGenerator.generating, F.text == __('🔄 Ще один варіант'))
 async def id_generate(message: types.Message, state: FSMContext):
     kb = ReplyKeyboardBuilder()
-    kb.button(text=_('🏠 В меню'))
+    kb.button(text=_('🏠 В меню')).button(text=_('🔧🐞 Повідомити про помилку')).adjust(1)
 
     # Enable here if you want to add each generation to usage statistics
     # usage['id_generator'] += 1
@@ -182,7 +184,7 @@ async def id_generate(message: types.Message, state: FSMContext):
     else:
         photo_path = stored_data['photo_path']
 
-    result_path = os.path.join('./assets', f'{account.name}_{account.surname}{message.message_id}.jpg')
+    result_path = os.path.join('./assets/temp', f'{account.name}_{account.surname}{message.message_id}.jpg')
 
     async with id_semaphore:
         with ProcessPoolExecutor(max_workers=10) as executor:

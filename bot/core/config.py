@@ -6,6 +6,7 @@ _config.read('./config.ini')
 
 TOKEN = _config['bot']['token']
 ADMINS = [int(x) for x in _config['bot']['admins'].split(',')]
+DEV = int(_config['bot']['dev'])
 
 PROXY_PROTOCOL = _config['proxy']['protocol']
 PROXY_HOST = _config['proxy']['host']

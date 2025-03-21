@@ -7,8 +7,8 @@ from aiogram.utils.i18n import I18n
 
 from bot.core.config import TOKEN
 from bot.core.middlewares import DatabaseI18nMiddleware
-from bot.routers import (acc_check, two_fa, tiktok_download, id_generator, unique_media,
-                         selfie_generator, play_apps, admin, for_farmers, doc_verification, text_rewrite)
+from bot.routers import (fb_acc_check, two_fa, tiktok_download, id_generator, unique_media,
+                         selfie_generator, play_apps, admin, for_farmers, doc_verification, text_rewrite, inst_acc_check)
 from bot import main_menu
 from bot.routers.play_apps import check_apps_task
 from bot.core.usage_statistics import dump_statistics_task, dump_statistics
@@ -30,7 +30,8 @@ async def main():
     dp.update.middleware(DatabaseI18nMiddleware(i18n))
 
     dp.include_router(main_menu.main_menu_router)
-    dp.include_router(acc_check.acc_check_router)
+    dp.include_router(fb_acc_check.acc_check_router)
+    dp.include_router(inst_acc_check.inst_check_router)
     dp.include_router(two_fa.two_fa_router)
     dp.include_router(tiktok_download.tiktok_router)
     dp.include_router(play_apps.play_apps_router)

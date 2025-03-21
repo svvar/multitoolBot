@@ -87,8 +87,6 @@ class TemplateInteractor:
         photo_to_paste_without_background.save(just_face_path)
         return just_face_path
 
-
-
     def insert_photo(self, photo_path, just_face_path, grey=False):
         face = Image.open(self.remove_photo_background(photo_path, just_face_path))
 

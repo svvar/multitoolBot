@@ -20,7 +20,7 @@ uniqualization_semaphore = asyncio.Semaphore(1)
 @unique_media_router.message(F.text == __('🕶️ Унікалізувати фото чи відео'))
 async def unique_ask_media(message: types.Message, state: FSMContext):
     kb = ReplyKeyboardBuilder()
-    kb.button(text=_('🏠 В меню'))
+    kb.button(text=_('🏠 В меню')).button(text=_('🔧🐞 Повідомити про помилку')).adjust(1)
 
     await message.answer(_('Відправте фото або відео для унікалізації\n\nФормат: jpg, jpeg, png, mp4\nРозмір: до 20 мб'),
                          reply_markup=kb.as_markup(resize_keyboard=True))

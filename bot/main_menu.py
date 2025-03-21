@@ -5,8 +5,9 @@ from aiogram.utils.i18n import gettext as _, lazy_gettext as __
 from aiogram.utils.i18n.context import get_i18n
 from aiogram.fsm.context import FSMContext
 
-from bot.core.states import Setup
+from bot.core.states import Setup, BugReport
 from bot.core.storage import main_storage as storage
+from bot.core.config import DEV
 
 
 main_menu_router = Router()
@@ -59,6 +60,7 @@ async def set_lang(message: types.Message, state: FSMContext):
 async def show_menu(message: types.Message, state: FSMContext):
     kb = ReplyKeyboardBuilder()
     kb.button(text=_('✅️ Перевірити FB акаунти на блокування'))
+    kb.button(text=_('📷✅️ Перевірити Instagram на блокування'))
     kb.button(text=_('🔒 2fa код'))
     kb.button(text=_('📹 Завантажити відео з TikTok'))
     kb.button(text=_('📱 Додатки Google Play'))
@@ -69,12 +71,32 @@ async def show_menu(message: types.Message, state: FSMContext):
     kb.button(text=_('📝 Верифікація БМ (укр.)'))
     kb.button(text=_('📝 Верифікація TikTok (бізнес акк.)'))
     kb.button(text=_('✍️ Перефразувати текст'))
+    kb.button(text=_('🔧🐞 Повідомити про помилку'))
     kb.button(text=_('💬 Змінити мову'))
     kb.adjust(2)
 
     await message.answer(_('Виберіть дію з меню:'), reply_markup=kb.as_markup(resize_keyboard=True))
     await state.clear()
 
+
+@main_menu_router.message(F.text == __('🔧🐞 Повідомити про помилку'))
+async def report_error(message: types.Message, state: FSMContext = None):
+    kb = ReplyKeyboardBuilder()
+    kb.button(text='🏠 В меню')
+
+    await message.answer(_('Опишіть що не працює, якщо можливо прикріпіть 1 (один) скріншот\n'), reply_markup=kb.as_markup(resize_keyboard=True))
+    await state.set_state(BugReport.describing_bug)
+
+
+@main_menu_router.message(BugReport.describing_bug)
+async def send_error_report(message: types.Message, state: FSMContext):
+    await message.forward(DEV)
+
+    kb_for_dev = InlineKeyboardBuilder().button(text='Виправив', callback_data=f'bugreport_{message.from_user.id}')
+    await message.bot.send_message(DEV, f'Повідомлення про помилку від {message.from_user.full_name}, {message.from_user.username}',
+                                   reply_markup=kb_for_dev.as_markup())
+    await message.answer(_('Дякуємо. Коли помилка буде виправлена, ми вас проінформуємо'))
+    await state.clear()
 
 async def send_custom_welcome_message(message: types.Message):
     url_kb = None

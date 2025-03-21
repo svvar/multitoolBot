@@ -6,6 +6,7 @@ from bot.core.storage.usage_stats_storage import update_usage_stats
 class UsageData:
     def __init__(self):
         self.fb_acc_check = 0
+        self.inst_acc_check = 0
         self.two_fa = 0
         self.tiktok_downloader = 0
         self.play_apps_check = 0
@@ -25,6 +26,7 @@ class UsageData:
 
     def reset(self):
         self.fb_acc_check = 0
+        self.inst_acc_check = 0
         self.two_fa = 0
         self.tiktok_downloader = 0
         self.play_apps_check = 0

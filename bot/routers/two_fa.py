@@ -28,7 +28,7 @@ async def start_2fa(message: types.Message, state: FSMContext):
         await state.set_state(TwoFA.key_input_callback)
     else:
         back_kb = ReplyKeyboardBuilder()
-        back_kb.button(text=_('🏠 В меню'))
+        back_kb.button(text=_('🏠 В меню')).button(text=_('🔧🐞 Повідомити про помилку')).adjust(1)
 
         await message.answer(_('Введіть ключ для 2fa:'), reply_markup=back_kb.as_markup(resize_keyboard=True))
         await state.set_state(TwoFA.key_input_msg)

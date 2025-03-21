@@ -9,7 +9,7 @@ from aiogram.utils.keyboard import ReplyKeyboardBuilder, InlineKeyboardBuilder
 from aiogram.utils.i18n import gettext as _, lazy_gettext as __
 from aiogram.exceptions import TelegramBadRequest, TelegramForbiddenError
 
-from bot.core.states import AdminMailing, AdminWelcome
+from bot.core.states import AdminMailing, AdminWelcome, BugReport
 from bot.core.config import ADMINS
 from bot.core.storage.main_storage import (get_users_dump, count_users, count_users_by_code, get_lang_codes, get_all_user_ids,
                               get_user_ids_by_lang, set_start_msg)
@@ -108,6 +108,7 @@ async def show_usage_statistics(message: types.Message):
     stats = await get_usage_stats()
     template_string = _('Використання функцій бота:\n\n'
                         'Перевірка акаунтів FB:   *{}*\n'
+                        'Перевірка акаунтів Instagram:   *{}*\n'
                         '2fa код:   *{}*\n'
                         'Завантаження відео з TikTok:   *{}*\n'
                         'Перевірка додатків Google Play:   *{}*\n'
@@ -396,3 +397,27 @@ def convert_to_buttons(message_text: str) -> list:
             raise ValueError(url)
 
     return buttons_result
+
+
+##############################################################
+# FOR DEVELOPER (send reply to a user that bug/error is fixed)
+##############################################################
+
+@admin_router.callback_query(F.data.startswith('bugreport_'))
+async def bug_fix_reply(callback: types.CallbackQuery, state: FSMContext):
+    user_id = int(callback.data.split('_')[1])
+    await state.update_data(user_id=user_id)
+    await callback.answer()
+
+    await callback.message.answer(_('Опишіть виправлення помилки (це побачить користувач що повідомив про помилку)'))
+    await state.set_state(BugReport.dev_entering_reply)
+
+
+@admin_router.message(BugReport.dev_entering_reply)
+async def bug_fix_reply_send(message: types.Message, state: FSMContext):
+    data = await state.get_data()
+    user_id = data['user_id']
+
+    text = message.text
+    await message.bot.send_message(user_id, text)
+    await state.clear()

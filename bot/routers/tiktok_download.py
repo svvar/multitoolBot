@@ -18,7 +18,7 @@ tiktok_semaphore = asyncio.Semaphore(2)
 @tiktok_router.message(F.text == __('📹 Завантажити відео з TikTok'))
 async def tiktok_download_start(message: types.Message, state: FSMContext):
     back_kb = ReplyKeyboardBuilder()
-    back_kb.button(text=_('🏠 В меню'))
+    back_kb.button(text=_('🏠 В меню')).button(text=_('🔧🐞 Повідомити про помилку')).adjust(1)
     await message.answer(_('Відправте посилання на відео з TikTok'), reply_markup=back_kb.as_markup(resize_keyboard=True))
     await state.set_state(TikTokDownload.url_input)
 
