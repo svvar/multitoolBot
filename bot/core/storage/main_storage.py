@@ -15,6 +15,7 @@ class Users(Base):
     name = Column(Text)
     surname = Column(Text)
     username = Column(Text)
+    balance = Column(Integer)
     tg_language = Column(Text)
     bot_language = Column(Text)
     registered_date = Column(DateTime, default=func.now())
@@ -53,6 +54,17 @@ class WelcomeMessages(Base):
     welcome_links = Column(Text)
 
 
+async def create_async_session():
+    async with AsyncSession(engine) as session:
+        yield session
+
+
+# async def init_db():
+#     # Используем run_sync для создания таблиц в асинхронном контексте
+#     async with engine.begin() as conn:
+#         await conn.run_sync(Base.metadata.create_all)
+
+
 ### USERS
 async def find_user(tg_id):
     async with AsyncSession(engine) as session:
@@ -61,8 +73,16 @@ async def find_user(tg_id):
 
 async def add_user(tg_id, name, surname, username, tg_language):
     async with AsyncSession(engine) as session:
-        await session.execute(sa.insert(Users).values(tg_id=tg_id, name=name, surname=surname, username=username, tg_language=tg_language))
+        await session.execute(sa.insert(Users).values(tg_id=tg_id, name=name, surname=surname, username=username, balance=0, tg_language=tg_language))
         await session.commit()
+
+async def get_user_balance(tg_id):
+
+    async for session in create_async_session():
+
+        user = await session.execute(sa.select(Users).where(Users.tg_id == tg_id))
+        user_balance = user.scalar()
+        return user_balance.balance
 
 async def get_users_dump():
     async with AsyncSession(engine) as session:
@@ -226,4 +246,6 @@ async def set_start_msg(welcome_text, welcome_media_id, welcome_links):
                                                                 welcome_media_id=welcome_media_id,
                                                                 welcome_links=welcome_links))
         await session.commit()
-
+#
+# import asyncio
+# asyncio.run(init_db())
