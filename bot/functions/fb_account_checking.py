@@ -6,16 +6,16 @@ from aiohttp_socks import ProxyConnector
 from bot.core import config
 
 
-def extract_links(message: str) -> list:
+def extract_links(message: str) -> set:
     fb_url_pattern = r'(https?://(?:\w+\.)?facebook\.com/\S+|www\.(?:\w+\.)?facebook\.com/\S+|\b\d{13,16}\b)'
-    return re.findall(fb_url_pattern, message)
+    return set(re.findall(fb_url_pattern, message))
 
 
-async def check_urls(urls: list[str]):
+async def check_urls(urls: set[str]):
     proxy_url = f"{config.PROXY_PROTOCOL}://{config.PROXY_USERNAME}:{config.PROXY_PASSWORD}@{config.PROXY_HOST}:{config.PROXY_PORT}"
     socks_connector = ProxyConnector.from_url(proxy_url)
 
-    async with aiohttp.ClientSession() as session:
+    async with aiohttp.ClientSession(connector=socks_connector) as session:
         tasks = [_check_url(session, url) for url in urls]
         results = await asyncio.gather(*tasks)
 
