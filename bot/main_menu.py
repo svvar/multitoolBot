@@ -59,8 +59,10 @@ async def set_lang(message: types.Message, state: FSMContext):
 @main_menu_router.message(F.text == __('🏠 В меню'))
 async def show_menu(message: types.Message, state: FSMContext):
     kb = ReplyKeyboardBuilder()
+    kb.button(text=_('💰 Управлiння балансом'))
     kb.button(text=_('✅️ Перевірити FB акаунти на блокування'))
     kb.button(text=_('📷✅️ Перевірити Instagram на блокування'))
+    kb.button(text=_('➡️ Передати Fan Page'))
     kb.button(text=_('🔒 2fa код'))
     kb.button(text=_('📹 Завантажити відео з TikTok'))
     kb.button(text=_('📱 Додатки Google Play'))
