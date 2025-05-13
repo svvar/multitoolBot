@@ -337,6 +337,10 @@ async def pin_message_start(message: types.Message, state: FSMContext):
     back_kb.button(text=_('🔙 Назад'))
 
     mailings = await get_mailings()
+    if not mailings:
+        await message.answer(_('Історія розсилок поки що порожня'))
+        await state.clear()
+        await enter_admin_panel(message, state)
     text = '\n\n'.join([f'{mailing.id} - {mailing.mailing_name}' for mailing in mailings])
     await message.answer(text=text)
     await message.answer(_('Введіть ID розсилки, яку потрібно закріпити'), reply_markup=back_kb.as_markup(resize_keyboard=True))
@@ -353,6 +357,10 @@ async def unpin_message_start(message: types.Message, state: FSMContext):
     back_kb.button(text=_('🔙 Назад'))
 
     mailings = await get_mailings()
+    if not mailings:
+        await message.answer(_('Історія розсилок поки що порожня'))
+        await state.clear()
+        await enter_admin_panel(message, state)
     text = '\n\n'.join([f'{mailing.id} - {mailing.mailing_name}' for mailing in mailings])
     await message.answer(text=text)
     await message.answer(_('Введіть ID розсилки, яку потрібно відкріпити'), reply_markup=back_kb.as_markup(resize_keyboard=True))
