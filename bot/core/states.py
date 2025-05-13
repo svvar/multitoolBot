@@ -41,6 +41,7 @@ class Uniquilizer(StatesGroup):
 
 
 class AdminMailing(StatesGroup):
+    mailing_name_entering = State()
     selecting_lang = State()
     entering_message = State()
     asking_links = State()
@@ -48,8 +49,14 @@ class AdminMailing(StatesGroup):
     process = State()
 
 class AdminMsgForward(StatesGroup):
+    mailing_name_entering = State()
     waiting_for_message = State()
     process = State()
+
+
+class PinMailingMessage(StatesGroup):
+    entering_id_for_pin = State()
+    entering_id_for_unpin = State()
 
 class AdminWelcome(StatesGroup):
     entering_message = State()

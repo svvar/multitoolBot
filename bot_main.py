@@ -7,6 +7,7 @@ from aiogram.utils.i18n import I18n
 
 from bot.core.config import TOKEN
 from bot.core.middlewares import DatabaseI18nMiddleware
+from bot.core.storage.main_storage import create_tables
 from bot.routers import (fb_acc_check, two_fa, tiktok_download, id_generator, unique_media,
                          selfie_generator, play_apps, admin, for_farmers, doc_verification, text_rewrite, inst_acc_check)
 from bot import main_menu
@@ -47,6 +48,7 @@ async def main():
 
     bot.http_session = http_session
 
+    await create_tables()
     await check_apps_task(bot)
     await dump_statistics_task()
     await start_polling(bot, dp)
