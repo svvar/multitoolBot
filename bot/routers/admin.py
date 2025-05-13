@@ -9,7 +9,7 @@ from aiogram.utils.keyboard import ReplyKeyboardBuilder, InlineKeyboardBuilder
 from aiogram.utils.i18n import gettext as _, lazy_gettext as __
 from aiogram.exceptions import TelegramBadRequest, TelegramForbiddenError
 
-from bot.core.states import AdminMailing, AdminWelcome, BugReport
+from bot.core.states import AdminMailing, AdminWelcome, BugReport, AdminMsgForward
 from bot.core.config import ADMINS
 from bot.core.storage.main_storage import (get_users_dump, count_users, count_users_by_code, get_lang_codes, get_all_user_ids,
                               get_user_ids_by_lang, set_start_msg)
@@ -32,6 +32,7 @@ async def enter_admin_panel(message: types.Message, state: FSMContext):
     admin_kb.button(text=_('Статистика використання'))
     admin_kb.button(text=_('Вигрузити користувачів'))
     admin_kb.button(text=_('Налаштувати розсилку'))
+    admin_kb.button(text=_('Переслати повідомлення користувачам'))
     admin_kb.button(text=_('Налаштувати вітальне повідомлення'))
     admin_kb.button(text=_('🏠 В меню'))
     admin_kb.adjust(2)
@@ -217,11 +218,13 @@ async def mailing_links(message: types.Message, state: FSMContext):
             await message.answer(_('Неправильний формат вводу посилань, посилання не додані') + '\n\n' + str(e))
 
 
+@admin_router.message(AdminMsgForward.process, F.text == __('Запустити розсилку'))
 @admin_router.message(AdminMailing.process, F.text == __('Запустити розсилку'))
 async def mailing_process(message: types.Message, state: FSMContext):
     data = await state.get_data()
     msg_id = data['message_id']
-    if data['lang'] == 'ALL':
+
+    if await state.get_state() == AdminMsgForward.process or data['lang'] == 'ALL':
         users = await get_all_user_ids()
     else:
         users = await get_user_ids_by_lang(data['lang'])
@@ -234,7 +237,7 @@ async def mailing_process(message: types.Message, state: FSMContext):
         users.remove(message.from_user.id)
         total -= 1
 
-    await message.answer(_('Здійснюється розсилка...\nМова: {}').format(data['lang']),
+    await message.answer(_('Здійснюється розсилка...\nМова: {}').format(data.get('lang', 'ALL')),
                          reply_markup=types.ReplyKeyboardRemove())
     progress = await message.answer(_('Всього адресатів (окрім ВАС): {}\nУспішно відправлено: {}\nПомилок: {}').format(total, successful, failed))
 
@@ -245,13 +248,19 @@ async def mailing_process(message: types.Message, state: FSMContext):
             mailing_kb.button(text=text, url=url)
         mailing_kb.adjust(1)
 
+
+    if await state.get_state() == AdminMailing.process:
+        mailing_method = message.bot.copy_message
+    else:
+        mailing_method = message.bot.forward_message
+
+
     for user in users:
         try:
-            if mailing_kb:
-                await message.bot.copy_message(chat_id=user, from_chat_id=message.chat.id, message_id=msg_id,
-                                            reply_markup=mailing_kb.as_markup())
+            if mailing_kb:           # forward_message does not support reply_markup, but we don't ask for it in forward dialog | this is unreachable in forward dialog
+                await mailing_method(chat_id=user, from_chat_id=message.chat.id, message_id=msg_id, reply_markup=mailing_kb.as_markup())
             else:
-                await message.bot.copy_message(chat_id=user, from_chat_id=message.chat.id, message_id=msg_id)
+                await mailing_method(chat_id=user, from_chat_id=message.chat.id, message_id=msg_id)
             successful += 1
         except (TelegramBadRequest, TelegramForbiddenError) as e:
             failed += 1
@@ -264,6 +273,35 @@ async def mailing_process(message: types.Message, state: FSMContext):
     await message.answer(_('Розсилка завершена'))
     await state.clear()
     await enter_admin_panel(message, state)
+
+
+@admin_router.message(F.text == __('Переслати повідомлення користувачам'))
+async def forward_message_start(message: types.Message, state: FSMContext):
+    if message.from_user.id not in ADMINS:
+        await message.answer(_('Ви не маєте доступу до цієї команди'))
+        return
+
+    back_kb = ReplyKeyboardBuilder()
+    back_kb.button(text=_('🔙 Назад'))
+
+    await message.answer(_('Перешліть повідомлення, яке потрібно переслати усім користувачам\n'
+                           'Буде видно автора повідомлення\n'
+                           'Підтримується 1 фото або відео'),
+                         reply_markup=back_kb.as_markup(resize_keyboard=True))
+    await state.set_state(AdminMsgForward.waiting_for_message)
+
+
+@admin_router.message(AdminMsgForward.waiting_for_message)
+async def forward_message_submit(message: types.Message, state: FSMContext):
+    await state.update_data(message_id=message.message_id)
+
+    ask_mailing_kb = ReplyKeyboardBuilder()
+    ask_mailing_kb.button(text=_('Запустити розсилку'))
+    ask_mailing_kb.button(text=_('🔙 Назад'))
+    ask_mailing_kb.adjust(1)
+
+    await message.answer(_('Підтвердіть пересилку повідомлення усім користувачам'), reply_markup=ask_mailing_kb.as_markup(resize_keyboard=True))
+    await state.set_state(AdminMsgForward.process)
 
 
 @admin_router.message(F.text == __('Налаштувати вітальне повідомлення'))

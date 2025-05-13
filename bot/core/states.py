@@ -47,6 +47,10 @@ class AdminMailing(StatesGroup):
     preview = State()
     process = State()
 
+class AdminMsgForward(StatesGroup):
+    waiting_for_message = State()
+    process = State()
+
 class AdminWelcome(StatesGroup):
     entering_message = State()
     entering_links = State()

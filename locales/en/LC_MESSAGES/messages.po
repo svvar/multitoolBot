@@ -1,132 +1,28 @@
-# Translations template for PROJECT.
+# English translations for PROJECT.
 # Copyright (C) 2025 ORGANIZATION
 # This file is distributed under the same license as the PROJECT project.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-04-09 16:03+0300\n"
+"POT-Creation-Date: 2025-05-13 16:34+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: en\n"
+"Language-Team: en <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.13.1\n"
+"Generated-By: Babel 2.9.1\n"
 
-#: bot/main_menu.py:62
-msgid "💰 Управлiння балансом"
-msgstr "💰 Balance management"
-
-#: bot/main_menu.py:63
-msgid "✅️ Перевірити FB акаунти на блокування"
-msgstr "✅️ Check FB ABOVE ACCOUNTS"
-
-#: bot/main_menu.py:64
-msgid "📷✅️ Перевірити Instagram на блокування"
-msgstr "📷 Check Instagram for lock"
-
-#: bot/main_menu.py:65
-msgid "➡️ Передати Fan Page"
-msgstr "➡️ Transfer Fan Page"
-
-#: bot/main_menu.py:66
-msgid "🔒 2fa код"
-msgstr "🔒 2fa code"
-
-#: bot/main_menu.py:67
-msgid "📹 Завантажити відео з TikTok"
-msgstr "📹 Download video from Tiktok"
-
-#: bot/main_menu.py:68
-msgid "📱 Додатки Google Play"
-msgstr "📱 Google Play app"
-
-#: bot/main_menu.py:69
-msgid "🆔 Генератор ID"
-msgstr "🆔 Generator ID"
-
-#: bot/main_menu.py:70
-msgid "🕶️ Унікалізувати фото чи відео"
-msgstr "🕶️ to unite photos or videos"
-
-#: bot/main_menu.py:71
-msgid "🚀 Фармерам"
-msgstr "🚀 Farmers"
-
-#: bot/main_menu.py:72
-msgid "🤳 Генератор селфі"
-msgstr "🤳 Selfie generator"
-
-#: bot/main_menu.py:73
-msgid "📝 Верифікація БМ (укр.)"
-msgstr "📝 BM verification (ukr.)"
-
-#: bot/main_menu.py:74
-msgid "📝 Верифікація TikTok (бізнес акк.)"
-msgstr "📝 TikTok verification (Akk.)"
-
-#: bot/main_menu.py:75
-msgid "✍️ Перефразувати текст"
-msgstr "✍️ to paraphrase the text"
-
-#: bot/main_menu.py:76 bot/routers/fb_acc_check.py:30
-#: bot/routers/for_farmers.py:34 bot/routers/id_generator.py:27
-#: bot/routers/id_generator.py:48 bot/routers/id_generator.py:84
-#: bot/routers/id_generator.py:113 bot/routers/id_generator.py:132
-#: bot/routers/id_generator.py:167 bot/routers/inst_acc_check.py:19
-#: bot/routers/inst_acc_check.py:29 bot/routers/selfie_generator.py:24
-#: bot/routers/selfie_generator.py:46 bot/routers/text_rewrite.py:27
-#: bot/routers/tiktok_download.py:21 bot/routers/transfer_fp.py:23
-#: bot/routers/two_fa.py:31 bot/routers/unique_media.py:23
-msgid "🔧🐞 Повідомити про помилку"
-msgstr "🔧🐞 Report an error"
-
-#: bot/main_menu.py:77
+#: bot/main_menu.py:31 bot/main_menu.py:75
 msgid "💬 Змінити мову"
 msgstr "💬 Change the language"
 
-#: bot/main_menu.py:80 bot/routers/for_farmers.py:37
-msgid "Виберіть дію з меню:"
-msgstr "Choose an action from the menu:"
-
-#: bot/main_menu.py:89
-msgid "Опишіть що не працює, якщо можливо прикріпіть 1 (один) скріншот\n"
-msgstr "Describe what doesn't work if possible attach 1 (one) screenshot\n"
-
-#: bot/main_menu.py:100
-msgid "Дякуємо. Коли помилка буде виправлена, ми вас проінформуємо"
-msgstr "Thank you.When the error is fixed we will inform you"
-
-#: bot/routers/admin.py:27 bot/routers/admin.py:45 bot/routers/admin.py:80
-#: bot/routers/admin.py:105 bot/routers/admin.py:134 bot/routers/admin.py:272
-msgid "Ви не маєте доступу до цієї команди"
-msgstr "You do not have access to this team"
-
-#: bot/routers/admin.py:31
-msgid "Статистика користувачів"
-msgstr "User statistics"
-
-#: bot/routers/admin.py:32
-msgid "Статистика використання"
-msgstr "Use statistics"
-
-#: bot/routers/admin.py:33
-msgid "Вигрузити користувачів"
-msgstr "To bite users"
-
-#: bot/routers/admin.py:34
-msgid "Налаштувати розсилку"
-msgstr "Set up the newsletter"
-
-#: bot/routers/admin.py:35
-msgid "Налаштувати вітальне повідомлення"
-msgstr "Set up a greeting message"
-
-#: bot/routers/admin.py:36 bot/routers/fb_acc_check.py:30
+#: bot/main_menu.py:59 bot/routers/admin.py:37 bot/routers/fb_acc_check.py:30
 #: bot/routers/for_farmers.py:33 bot/routers/id_generator.py:26
 #: bot/routers/id_generator.py:47 bot/routers/id_generator.py:83
 #: bot/routers/id_generator.py:105 bot/routers/id_generator.py:112
@@ -134,28 +30,137 @@ msgstr "Set up a greeting message"
 #: bot/routers/inst_acc_check.py:19 bot/routers/inst_acc_check.py:29
 #: bot/routers/play_apps.py:73 bot/routers/selfie_generator.py:23
 #: bot/routers/selfie_generator.py:45 bot/routers/tiktok_download.py:21
-#: bot/routers/transfer_fp.py:23 bot/routers/two_fa.py:31
-#: bot/routers/unique_media.py:23
+#: bot/routers/two_fa.py:31 bot/routers/unique_media.py:23
 msgid "🏠 В меню"
 msgstr "🏠 On the menu"
 
-#: bot/routers/admin.py:39
+#: bot/main_menu.py:62 bot/routers/fb_acc_check.py:26
+msgid "✅️ Перевірити FB акаунти на блокування"
+msgstr "✅️ Check FB ABOVE ACCOUNTS"
+
+#: bot/main_menu.py:63 bot/routers/inst_acc_check.py:16
+msgid "📷✅️ Перевірити Instagram на блокування"
+msgstr "📷 Check Instagram for lock"
+
+#: bot/main_menu.py:64 bot/routers/two_fa.py:17
+msgid "🔒 2fa код"
+msgstr "🔒 2fa code"
+
+#: bot/main_menu.py:65 bot/routers/tiktok_download.py:18
+msgid "📹 Завантажити відео з TikTok"
+msgstr "📹 Download video from Tiktok"
+
+#: bot/main_menu.py:66 bot/routers/play_apps.py:20
+msgid "📱 Додатки Google Play"
+msgstr "📱 Google Play app"
+
+#: bot/main_menu.py:67 bot/routers/id_generator.py:21
+msgid "🆔 Генератор ID"
+msgstr "🆔 Generator ID"
+
+#: bot/main_menu.py:68 bot/routers/unique_media.py:20
+msgid "🕶️ Унікалізувати фото чи відео"
+msgstr "🕶️ to unite photos or videos"
+
+#: bot/main_menu.py:69 bot/routers/for_farmers.py:26
+msgid "🚀 Фармерам"
+msgstr "🚀 Farmers"
+
+#: bot/main_menu.py:70 bot/routers/selfie_generator.py:17
+msgid "🤳 Генератор селфі"
+msgstr "🤳 Selfie generator"
+
+#: bot/main_menu.py:71 bot/routers/doc_verification.py:21
+msgid "📝 Верифікація БМ (укр.)"
+msgstr "📝 BM verification (ukr.)"
+
+#: bot/main_menu.py:72 bot/routers/doc_verification.py:45
+msgid "📝 Верифікація TikTok (бізнес акк.)"
+msgstr "📝 TikTok verification (Akk.)"
+
+#: bot/main_menu.py:73 bot/routers/text_rewrite.py:24
+msgid "✍️ Перефразувати текст"
+msgstr "✍️ to paraphrase the text"
+
+#: bot/main_menu.py:74 bot/main_menu.py:82 bot/routers/fb_acc_check.py:30
+#: bot/routers/for_farmers.py:34 bot/routers/id_generator.py:27
+#: bot/routers/id_generator.py:48 bot/routers/id_generator.py:84
+#: bot/routers/id_generator.py:113 bot/routers/id_generator.py:132
+#: bot/routers/id_generator.py:167 bot/routers/inst_acc_check.py:19
+#: bot/routers/inst_acc_check.py:29 bot/routers/selfie_generator.py:24
+#: bot/routers/selfie_generator.py:46 bot/routers/text_rewrite.py:27
+#: bot/routers/tiktok_download.py:21 bot/routers/two_fa.py:31
+#: bot/routers/unique_media.py:23
+msgid "🔧🐞 Повідомити про помилку"
+msgstr "🔧🐞 Report an error"
+
+#: bot/main_menu.py:78 bot/routers/for_farmers.py:37
+msgid "Виберіть дію з меню:"
+msgstr "Choose an action from the menu:"
+
+#: bot/main_menu.py:87
+msgid "Опишіть що не працює, якщо можливо прикріпіть 1 (один) скріншот\n"
+msgstr "Describe what doesn't work if possible attach 1 (one) screenshot\n"
+
+#: bot/main_menu.py:98
+msgid "Дякуємо. Коли помилка буде виправлена, ми вас проінформуємо"
+msgstr "Thank you.When the error is fixed we will inform you"
+
+#: bot/routers/admin.py:22 bot/routers/admin.py:143 bot/routers/admin.py:159
+#: bot/routers/admin.py:174 bot/routers/admin.py:202 bot/routers/admin.py:285
+#: bot/routers/admin.py:300 bot/routers/admin.py:314 bot/routers/admin.py:343
+#: bot/routers/admin.py:396
+msgid "🔙 Назад"
+msgstr "🔙 Back"
+
+#: bot/routers/admin.py:27 bot/routers/admin.py:46 bot/routers/admin.py:81
+#: bot/routers/admin.py:106 bot/routers/admin.py:135 bot/routers/admin.py:281
+#: bot/routers/admin.py:310
+msgid "Ви не маєте доступу до цієї команди"
+msgstr "You do not have access to this team"
+
+#: bot/routers/admin.py:31 bot/routers/admin.py:78
+msgid "Статистика користувачів"
+msgstr "User statistics"
+
+#: bot/routers/admin.py:32 bot/routers/admin.py:103
+msgid "Статистика використання"
+msgstr "Use statistics"
+
+#: bot/routers/admin.py:33 bot/routers/admin.py:43
+msgid "Вигрузити користувачів"
+msgstr "To bite users"
+
+#: bot/routers/admin.py:34 bot/routers/admin.py:132
+msgid "Налаштувати розсилку"
+msgstr "Set up the newsletter"
+
+#: bot/routers/admin.py:35 bot/routers/admin.py:278
+#, fuzzy
+msgid "Переслати повідомлення користувачам"
+msgstr "⬆️ save this message as a starting? ⬆️"
+
+#: bot/routers/admin.py:36 bot/routers/admin.py:307
+msgid "Налаштувати вітальне повідомлення"
+msgstr "Set up a greeting message"
+
+#: bot/routers/admin.py:40
 msgid "Панель адміністратора"
 msgstr "Administrator panel"
 
-#: bot/routers/admin.py:89
+#: bot/routers/admin.py:90
 msgid "Всього: {} користувачів"
 msgstr "Total: {} users"
 
-#: bot/routers/admin.py:94
+#: bot/routers/admin.py:95
 msgid "{}: {} користувачів"
 msgstr "{}: {} users"
 
-#: bot/routers/admin.py:97
+#: bot/routers/admin.py:98
 msgid "Мова не встановлена: {} користувачів"
 msgstr "Language not set: {} users"
 
-#: bot/routers/admin.py:109
+#: bot/routers/admin.py:110
 msgid ""
 "Використання функцій бота:\n"
 "\n"
@@ -199,29 +204,25 @@ msgstr ""
 "FanPage Citat Generator: *{} *\n"
 "Full Fanpage Generator: *{} *"
 
-#: bot/routers/admin.py:142 bot/routers/admin.py:158 bot/routers/admin.py:173
-#: bot/routers/admin.py:201 bot/routers/admin.py:276 bot/routers/admin.py:305
-#: bot/routers/admin.py:358
-msgid "🔙 Назад"
-msgstr "🔙 Back"
-
-#: bot/routers/admin.py:145 bot/routers/admin.py:152
+#: bot/routers/admin.py:146 bot/routers/admin.py:153
 msgid "Виберіть мову для розсилки:"
 msgstr "Choose a language for mailing:"
 
-#: bot/routers/admin.py:160
+#: bot/routers/admin.py:161
 msgid "Введіть повідомлення для розсилки (1 фото або відео на повідомлення)"
 msgstr "Enter a message for mailing (1 photo or video on a message)"
 
-#: bot/routers/admin.py:172 bot/routers/admin.py:304
+#: bot/routers/admin.py:173 bot/routers/admin.py:183 bot/routers/admin.py:342
+#: bot/routers/admin.py:363
 msgid "Не додавати посилання"
 msgstr "Do not add links"
 
-#: bot/routers/admin.py:200
+#: bot/routers/admin.py:201 bot/routers/admin.py:221 bot/routers/admin.py:222
+#: bot/routers/admin.py:299
 msgid "Запустити розсилку"
 msgstr "Run the newsletter"
 
-#: bot/routers/admin.py:204
+#: bot/routers/admin.py:205
 msgid ""
 "⬆️Попередній перегляд повідомлення⬆️\n"
 "\n"
@@ -231,11 +232,11 @@ msgstr ""
 "\n"
 "Run the newsletter?"
 
-#: bot/routers/admin.py:217 bot/routers/admin.py:320
+#: bot/routers/admin.py:218 bot/routers/admin.py:358
 msgid "Неправильний формат вводу посилань, посилання не додані"
 msgstr "Incorrect reference input format, links not added"
 
-#: bot/routers/admin.py:237
+#: bot/routers/admin.py:240
 msgid ""
 "Здійснюється розсилка...\n"
 "Мова: {}"
@@ -243,7 +244,7 @@ msgstr ""
 "The mailing is made ...\n"
 "Language: {}"
 
-#: bot/routers/admin.py:239 bot/routers/admin.py:260 bot/routers/admin.py:262
+#: bot/routers/admin.py:242 bot/routers/admin.py:269 bot/routers/admin.py:271
 msgid ""
 "Всього адресатів (окрім ВАС): {}\n"
 "Успішно відправлено: {}\n"
@@ -253,25 +254,42 @@ msgstr ""
 "Successfully sent: {}\n"
 "Errors: {}"
 
-#: bot/routers/admin.py:264
+#: bot/routers/admin.py:273
 msgid "Розсилка завершена"
 msgstr "The mailing is complete"
 
-#: bot/routers/admin.py:278
+#: bot/routers/admin.py:287
+#, fuzzy
+msgid ""
+"Перешліть повідомлення, яке потрібно переслати усім користувачам\n"
+"Буде видно автора повідомлення\n"
+"Підтримується 1 фото або відео"
+msgstr ""
+"Forward the message that needs to be forwarded to all users\n"
+"Author of the message will be visible\n"
+"1 photo or video is allowed"
+
+#: bot/routers/admin.py:303
+msgid "Підтвердіть пересилку повідомлення усім користувачам"
+msgstr "Confirm forwarding the message to all users"
+
+#: bot/routers/admin.py:316
 msgid ""
 "Введіть нове вітальне повідомлення (+1 фото/відео):\n"
 "\n"
-"Вітальне повідомлення показується усім користувачами при старті бота незалежно від мови"
+"Вітальне повідомлення показується усім користувачами при старті бота "
+"незалежно від мови"
 msgstr ""
 "Enter a new greeting message (+1 photo/video):\n"
 "\n"
-"Greeting message is shown by all users when starting a bot regardless of language"
+"Greeting message is shown by all users when starting a bot regardless of "
+"language"
 
-#: bot/routers/admin.py:298
+#: bot/routers/admin.py:336
 msgid "Відправте медіа не файлом, повторіть"
 msgstr "Send Media Not a File, Repeat"
 
-#: bot/routers/admin.py:307
+#: bot/routers/admin.py:345
 msgid ""
 "Введіть список inline-посилань (макс. 3): \n"
 "\n"
@@ -285,46 +303,32 @@ msgstr ""
 "*Button name**Link*\n"
 "*Name of button 2**Link 2*"
 
-#: bot/routers/admin.py:357
+#: bot/routers/admin.py:395 bot/routers/admin.py:403
 msgid "Зберегти"
 msgstr "Save"
 
-#: bot/routers/admin.py:360
+#: bot/routers/admin.py:398
 msgid "⬆️Зберегти це повідомлення як стартове?⬆️"
 msgstr "⬆️ save this message as a starting? ⬆️"
 
-#: bot/routers/admin.py:381
+#: bot/routers/admin.py:419
 msgid "Вітальне повідомлення збережено"
 msgstr "The welcome message is saved"
 
-#: bot/routers/admin.py:412
+#: bot/routers/admin.py:450
 msgid ""
 "Опишіть виправлення помилки (це побачить користувач що повідомив про "
 "помилку)"
 msgstr ""
-"Describe an error correction (this will see the user that has notified the "
-"error)"
-
-#: bot/routers/check_user_balance.py:13
-msgid "💰 Поповнити баланс"
-msgstr "💰 Top"
-
-#: bot/routers/check_user_balance.py:20 bot/routers/transfer_fp.py:127
-msgid ""
-"✍️ Для поповнення балансу напишіть сапорту @mustage_support (можлива оплата "
-"в USDT): Привіт, хочу поповнити баланс у роботі @mustage_service_bot на "
-"{сумма_поповнення} $."
-msgstr ""
-"✍️ To replenish your balance, write a saport @mustage_support (a possible "
-"payment in USDT): Hi, I want to replenish your balance in "
-"@mustage_Service_bot on {Sum_fill} $."
+"Describe an error correction (this will see the user that has notified "
+"the error)"
 
 #: bot/routers/doc_verification.py:23 bot/routers/doc_verification.py:47
 #: bot/routers/id_generator.py:171
 msgid "⏳ Зачекайте, генерується фото..."
 msgstr "⏳ Wait, generated photo ..."
 
-#: bot/routers/fb_acc_check.py:29 bot/routers/transfer_fp.py:22
+#: bot/routers/fb_acc_check.py:29 bot/routers/fb_acc_check.py:43
 msgid "Почати перевірку"
 msgstr "Start checking"
 
@@ -350,29 +354,31 @@ msgstr ""
 "Blocked: {}\n"
 "Verification errors: {}*"
 
-#: bot/routers/fb_acc_check.py:62 bot/routers/fb_acc_check.py:68
-#: bot/routers/transfer_fp.py:58 bot/routers/transfer_fp.py:64
+#: bot/routers/fb_acc_check.py:68
 msgid "Активні акаунти"
 msgstr "Active accounts"
 
-#: bot/routers/fb_acc_check.py:71 bot/routers/fb_acc_check.py:77
-#: bot/routers/transfer_fp.py:67 bot/routers/transfer_fp.py:73
+#: bot/routers/fb_acc_check.py:77
 msgid "Заблоковані акаунти"
 msgstr "Blocked accounts"
 
-#: bot/routers/fb_acc_check.py:102 bot/routers/transfer_fp.py:101
+#: bot/routers/fb_acc_check.py:102
 msgid "Забагато повідомлень, спробуйте менше"
 msgstr "Too many messages, try less"
 
-#: bot/routers/for_farmers.py:30
+#: bot/routers/for_farmers.py:27 bot/routers/for_farmers.py:314
+msgid "↩️ Назад"
+msgstr "↩️ Back"
+
+#: bot/routers/for_farmers.py:30 bot/routers/for_farmers.py:61
 msgid "🔐 Генератор паролів"
 msgstr "🔐 Passwords generator"
 
-#: bot/routers/for_farmers.py:31
+#: bot/routers/for_farmers.py:31 bot/routers/for_farmers.py:199
 msgid "👨 Генератор імен"
 msgstr "👨 Name generator"
 
-#: bot/routers/for_farmers.py:32
+#: bot/routers/for_farmers.py:32 bot/routers/for_farmers.py:306
 msgid "⚡️ Генератор fan-page"
 msgstr "⚡️ Fan-Page generator"
 
@@ -451,29 +457,25 @@ msgstr "🎲 accidental"
 msgid "Виберіть країну:"
 msgstr "Choose a country:"
 
-#: bot/routers/for_farmers.py:309
+#: bot/routers/for_farmers.py:309 bot/routers/for_farmers.py:319
 msgid "🏷️ Назва"
 msgstr "🏷️ Name"
 
-#: bot/routers/for_farmers.py:310
+#: bot/routers/for_farmers.py:310 bot/routers/for_farmers.py:356
 msgid "📍 Адреса"
 msgstr "📍 Address"
 
-#: bot/routers/for_farmers.py:311
+#: bot/routers/for_farmers.py:311 bot/routers/for_farmers.py:403
 msgid "📞 Телефон"
 msgstr "📞 Phone"
 
-#: bot/routers/for_farmers.py:312
+#: bot/routers/for_farmers.py:312 bot/routers/for_farmers.py:447
 msgid "💬 Цитата"
 msgstr "💬 Quote"
 
-#: bot/routers/for_farmers.py:313
+#: bot/routers/for_farmers.py:313 bot/routers/for_farmers.py:490
 msgid "🌐 Все разом"
 msgstr "🌐 All together"
-
-#: bot/routers/for_farmers.py:314
-msgid "↩️ Назад"
-msgstr "↩️ Back"
 
 #: bot/routers/for_farmers.py:316
 msgid "Виберіть пункт меню:"
@@ -575,7 +577,7 @@ msgstr "💃 Woman"
 msgid "Введіть дату народження (ДД.ММ.РРРР):"
 msgstr "Enter the date of birth ("
 
-#: bot/routers/id_generator.py:183
+#: bot/routers/id_generator.py:164 bot/routers/id_generator.py:183
 msgid "🔄 Ще один варіант"
 msgstr "🔄 Another option"
 
@@ -585,8 +587,8 @@ msgstr "Generation error"
 
 #: bot/routers/inst_acc_check.py:21
 msgid ""
-"Введіть список username через кому або з нового рядка, або ж надішліть txt "
-"файл з username з нового рядка"
+"Введіть список username через кому або з нового рядка, або ж надішліть "
+"txt файл з username з нового рядка"
 msgstr ""
 "Enter the Username List through coma or new line, or send TXT file from "
 "username from new line"
@@ -599,25 +601,21 @@ msgstr "Incorrect file format.Repeat the input"
 msgid "Файл порожній. Повторіть ввід"
 msgstr "The file is empty.Repeat the input"
 
-#: bot/routers/inst_acc_check.py:59 bot/routers/inst_acc_check.py:96
+#: bot/routers/inst_acc_check.py:59
 msgid "Помилка при отриманні даних з інстаграм, спробуйте пізніше"
 msgstr "Error when receiving Instagram data, try later"
 
-#: bot/routers/inst_acc_check.py:61 bot/routers/inst_acc_check.py:99
+#: bot/routers/inst_acc_check.py:61
 msgid "не знайдено або забанено"
 msgstr "not found or entertaining"
 
-#: bot/routers/inst_acc_check.py:63 bot/routers/inst_acc_check.py:102
+#: bot/routers/inst_acc_check.py:63
 msgid "активний"
 msgstr "active"
 
 #: bot/routers/inst_acc_check.py:78
 msgid "Формат вводу не розпізнано. Повторіть ввід"
 msgstr "The input format is not recognized.Repeat the input"
-
-#: bot/routers/inst_acc_check.py:90
-msgid "username містить не дозволені символи"
-msgstr "Username contains unable characters"
 
 #: bot/routers/play_apps.py:37
 msgid "🚨 УВАГА! Ваш додаток *{}* заблоковано"
@@ -765,54 +763,6 @@ msgstr "Wait for the video loading ..."
 msgid "Відео не знайдено"
 msgstr "The video was not found"
 
-#: bot/routers/transfer_fp.py:26
-msgid ""
-"✍️ Для передачі Fan Page надішліть, будь ласка, список посилань на свої "
-"облікові записи Facebook (кожне посилання з нового рядка) повідомленням/ями "
-"або .txt-файлом."
-msgstr ""
-"✍️ For the transmission of Fan Page, please send a list of links to your "
-"Facebook accounts (each link from a new line) with a message/pit or .txt- "
-"file."
-
-#: bot/routers/transfer_fp.py:35
-msgid "⏳ Перевірка облікових записів на бан, будь ласка, зачекайте ..."
-msgstr "⏳ Check accounts on the banks please wait ..."
-
-#: bot/routers/transfer_fp.py:50
-msgid ""
-"*\n"
-"Количество аккаунтов: {}\n"
-"🔴 Заблокованих аккаунтiв: {}\n"
-"🟢 Активних аккаунтiв: {}\n"
-"    *"
-msgstr ""
-"*\n"
-"A account of account: {}\n"
-"🔴 Blocked accounts: {}\n"
-"🟢 Active accounts: {}\n"
-"*"
-
-#: bot/routers/transfer_fp.py:82
-msgid ""
-"✍️ Введіть кількість Fan Page для передачі на кожний обліковий запис "
-"Вартість Fan Page - 0.15$."
-msgstr ""
-"✍️ Enter the amount of Fan Page to transfer to each account the cost of Fan "
-"Page - $ 0.15."
-
-#: bot/routers/transfer_fp.py:119
-msgid "Запит на передачу прийнято!"
-msgstr "The transfer request is accepted!"
-
-#: bot/routers/transfer_fp.py:126
-msgid ""
-"⚠️ Недостатньо коштів на балансі. Необхідна сума: {} $, сума на балансі: {}"
-" $, брак коштів: {} $."
-msgstr ""
-"⚠️ There is not enough money on the balance sheet.Required amount: {} $, "
-"amount on the balance sheet: {} $, lack of funds: {} $."
-
 #: bot/routers/two_fa.py:26
 msgid "Введіть ключ для 2fa або виберіть з нещодавніх:"
 msgstr "Enter the 2FA key or select from recent:"
@@ -876,3 +826,80 @@ msgstr ""
 "⏳ Wait, generation added to the queue\n"
 "\n"
 "The file will be ready for 1-2 minutes"
+
+#~ msgid "💰 Управлiння балансом"
+#~ msgstr "💰 Balance management"
+
+#~ msgid "➡️ Передати Fan Page"
+#~ msgstr "➡️ Transfer Fan Page"
+
+#~ msgid "💰 Поповнити баланс"
+#~ msgstr "💰 Top"
+
+#~ msgid ""
+#~ "✍️ Для поповнення балансу напишіть "
+#~ "сапорту @mustage_support (можлива оплата в "
+#~ "USDT): Привіт, хочу поповнити баланс у"
+#~ " роботі @mustage_service_bot на "
+#~ "{сумма_поповнення} $."
+#~ msgstr ""
+#~ "✍️ To replenish your balance, write "
+#~ "a saport @mustage_support (a possible "
+#~ "payment in USDT): Hi, I want to"
+#~ " replenish your balance in "
+#~ "@mustage_Service_bot on {Sum_fill} $."
+
+#~ msgid "username містить не дозволені символи"
+#~ msgstr "Username contains unable characters"
+
+#~ msgid ""
+#~ "✍️ Для передачі Fan Page надішліть, "
+#~ "будь ласка, список посилань на свої "
+#~ "облікові записи Facebook (кожне посилання "
+#~ "з нового рядка) повідомленням/ями або "
+#~ ".txt-файлом."
+#~ msgstr ""
+#~ "✍️ For the transmission of Fan "
+#~ "Page, please send a list of links"
+#~ " to your Facebook accounts (each link"
+#~ " from a new line) with a "
+#~ "message/pit or .txt- file."
+
+#~ msgid "⏳ Перевірка облікових записів на бан, будь ласка, зачекайте ..."
+#~ msgstr "⏳ Check accounts on the banks please wait ..."
+
+#~ msgid ""
+#~ "*\n"
+#~ "Количество аккаунтов: {}\n"
+#~ "🔴 Заблокованих аккаунтiв: {}\n"
+#~ "🟢 Активних аккаунтiв: {}\n"
+#~ "    *"
+#~ msgstr ""
+#~ "*\n"
+#~ "A account of account: {}\n"
+#~ "🔴 Blocked accounts: {}\n"
+#~ "🟢 Active accounts: {}\n"
+#~ "*"
+
+#~ msgid ""
+#~ "✍️ Введіть кількість Fan Page для "
+#~ "передачі на кожний обліковий запис "
+#~ "Вартість Fan Page - 0.15$."
+#~ msgstr ""
+#~ "✍️ Enter the amount of Fan Page"
+#~ " to transfer to each account the "
+#~ "cost of Fan Page - $ 0.15."
+
+#~ msgid "Запит на передачу прийнято!"
+#~ msgstr "The transfer request is accepted!"
+
+#~ msgid ""
+#~ "⚠️ Недостатньо коштів на балансі. "
+#~ "Необхідна сума: {} $, сума на "
+#~ "балансі: {} $, брак коштів: {} $."
+#~ msgstr ""
+#~ "⚠️ There is not enough money on"
+#~ " the balance sheet.Required amount: {} "
+#~ "$, amount on the balance sheet: {}"
+#~ " $, lack of funds: {} $."
+
