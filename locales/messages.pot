@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-05-13 19:12+0300\n"
+"POT-Creation-Date: 2025-06-20 16:13+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.9.1\n"
+"Generated-By: Babel 2.13.1\n"
 
 #: bot/main_menu.py:31 bot/main_menu.py:75
 msgid "💬 Змінити мову"
@@ -466,15 +466,15 @@ msgstr ""
 msgid "📍 Адреса"
 msgstr ""
 
-#: bot/routers/for_farmers.py:311 bot/routers/for_farmers.py:403
+#: bot/routers/for_farmers.py:311 bot/routers/for_farmers.py:405
 msgid "📞 Телефон"
 msgstr ""
 
-#: bot/routers/for_farmers.py:312 bot/routers/for_farmers.py:447
+#: bot/routers/for_farmers.py:312 bot/routers/for_farmers.py:449
 msgid "💬 Цитата"
 msgstr ""
 
-#: bot/routers/for_farmers.py:313 bot/routers/for_farmers.py:490
+#: bot/routers/for_farmers.py:313 bot/routers/for_farmers.py:492
 msgid "🌐 Все разом"
 msgstr ""
 
@@ -487,8 +487,8 @@ msgid "Введіть кількість назв:"
 msgstr ""
 
 #: bot/routers/for_farmers.py:332 bot/routers/for_farmers.py:385
-#: bot/routers/for_farmers.py:432 bot/routers/for_farmers.py:476
-#: bot/routers/for_farmers.py:519
+#: bot/routers/for_farmers.py:434 bot/routers/for_farmers.py:478
+#: bot/routers/for_farmers.py:521
 msgid "Введіть число від {} до {}"
 msgstr ""
 
@@ -496,23 +496,27 @@ msgstr ""
 msgid "Введіть кількість адрес:"
 msgstr ""
 
-#: bot/routers/for_farmers.py:396
+#: bot/routers/for_farmers.py:393 bot/routers/for_farmers.py:534
+msgid "Генерація адрес займає деякий час. Зачекайте {} секунд"
+msgstr ""
+
+#: bot/routers/for_farmers.py:398
 msgid "Помилка генерації, спробуйте пізніше"
 msgstr ""
 
-#: bot/routers/for_farmers.py:421
+#: bot/routers/for_farmers.py:423
 msgid "Введіть кількість номерів телефону:"
 msgstr ""
 
-#: bot/routers/for_farmers.py:465
+#: bot/routers/for_farmers.py:467
 msgid "Введіть кількість цитат:"
 msgstr ""
 
-#: bot/routers/for_farmers.py:508
+#: bot/routers/for_farmers.py:510
 msgid "Введіть кількість fan page:"
 msgstr ""
 
-#: bot/routers/for_farmers.py:539
+#: bot/routers/for_farmers.py:545
 msgid ""
 "Назва fan page: {}\n"
 "Адреса: {}\n"

@@ -390,7 +390,9 @@ async def fan_page_address_gen(message: types.Message, state: FSMContext):
 
     async with gen_semaphore:
         try:
+            info_msg = await message.answer(_("Генерація адрес займає деякий час. Зачекайте {} секунд").format(amount))
             addresses = await generate_addresses(locale, amount)
+            await info_msg.delete()
             await _send_message_and_txt(message, '\n'.join(addresses), f'{locale} addresses.txt')
         except AttributeError as e:
             await message.answer(_('Помилка генерації, спробуйте пізніше'))
@@ -529,10 +531,14 @@ async def fan_page_all_gen(message: types.Message, state: FSMContext):
         phones = loop.run_in_executor(executor, generate_phones, locale, amount)
         quotes = get_random_quotes(locale, amount)
 
+    info_msg = await message.answer(_('Генерація адрес займає деякий час. Зачекайте {} секунд').format(amount))
+
     names = await names
     addresses = await addresses
     phones = await phones
     quotes = await quotes
+
+    await info_msg.delete()
 
     text = ''
     for i in range(amount):

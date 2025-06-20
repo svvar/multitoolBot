@@ -72,11 +72,14 @@ def generate_fan_page_names(n_names=20):
 
 async def generate_addresses(lang_code, n_addresses):
     url = f"{address_generator_url}/{lang_code.split('_')[0].lower()}/{lang_code.split('_')[1].lower()}"
-    connector = aiohttp.TCPConnector(limit=4)
-    async with aiohttp.ClientSession(connector=connector) as session:
-        tasks = [_address_request(session, url) for _ in range(n_addresses)]
-        addresses = await asyncio.gather(*tasks)
-        return [a.replace('\n', ' ') for a in addresses]
+    async with aiohttp.ClientSession() as session:
+        addresses = []
+        for _ in range(n_addresses):
+            address = await _address_request(session, url)
+            if address is not None:
+                addresses.append(address)
+            await asyncio.sleep(1)
+        return addresses
 
 
 
@@ -135,8 +138,13 @@ def generate_names_task(gender, locale, amount):
 
 
 async def main():
-    addresses = await generate_addresses('uk_UA', 10)
-    print(addresses)
+    # addresses = await generate_addresses('uk_UA', 10)
+    # print(addresses)
+    async with aiohttp.ClientSession() as session:
+        for i in range(13):
+            address = await _address_request(session, 'https://generatefakename.com/ru/address/uk/ua')
+            print(address)
+            await asyncio.sleep(1)
 
 if __name__ == '__main__':
     asyncio.run(main())
